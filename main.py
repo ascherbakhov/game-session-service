@@ -31,3 +31,9 @@ def get_session(session_id: int, db: Session = Depends(get_db)):
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
     return {"session_id": session.id, "user_id": session.user_id, "session_start": session.session_start, "session_end": session.session_end}
+
+@app.post("/sessions/heartbeat/{session_id}")
+def heartbeat(session_id: int, db: Session = Depends(get_db)):
+    dao = GameSessionDAO(db)
+    session = dao.update_heartbeat(session_id)
+    return {"session_id": session.id, "user_id": session.user_id, "last_heartbeat": session.last_heartbeat}

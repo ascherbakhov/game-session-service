@@ -19,3 +19,4 @@ websockets==13.1
 sqlalchemy
 alembic
 pysqlite3==0.5.4
+celery
