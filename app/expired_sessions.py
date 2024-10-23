@@ -2,7 +2,7 @@ from celery import Celery
 from celery.schedules import crontab
 
 
-from GameSessionDAO import SessionLocal, GameSessionDAO
+from app.database.GameSessionDAO import SessionLocal, GameSessionDAO
 
 # Celery setup
 celery_app = Celery(__name__, broker='redis://localhost:6379/0')

@@ -1,14 +1,9 @@
 from sqlalchemy.orm import Session
 from fastapi import FastAPI, HTTPException, Depends
 
-from GameSessionDAO import GameSessionDAO, get_db
+from app.database.GameSessionDAO import GameSessionDAO, get_db
 
-# SQLAlchemy setup
-
-
-# FastAPI setup
 app = FastAPI()
-
 
 
 # API endpoints

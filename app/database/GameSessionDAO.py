@@ -1,24 +1,16 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
-from sqlalchemy import Column, Integer, String, DateTime, create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker, Session
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, Session
 from fastapi import HTTPException
 
+from app.database.tables.models import GameSession
+
 # SQLAlchemy setup
-Base = declarative_base()
+
 engine = create_engine("sqlite:///game_sessions.db")
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Database model for GameSession
-class GameSession(Base):
-    __tablename__ = "game_sessions"
-
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(String, index=True, nullable=False)
-    session_start = Column(DateTime, default=datetime.utcnow)
-    session_end = Column(DateTime, nullable=True)
-    last_heartbeat = Column(DateTime, default=datetime.utcnow)
 
 
 # DAO for accessing game session data

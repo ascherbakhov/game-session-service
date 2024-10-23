@@ -4,8 +4,9 @@ from contextlib import contextmanager
 from sqlalchemy.orm import Session
 from uvicorn import run as uvicorn_run
 
-from GameSessionDAO import Base, engine, SessionLocal
-from expired_sessions import celery_app
+from app.database.GameSessionDAO import engine, SessionLocal
+from app.database.tables.models import Base
+from app.expired_sessions import celery_app
 
 
 # Manage.py script for managing FastAPI, Celery, and database setup
@@ -20,7 +21,7 @@ def get_db_context() -> Session:
 
 def start_api():
     """Start the FastAPI server."""
-    uvicorn_run("game_session_logger:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn_run("app.game_session_logger:app", host="127.0.0.1", port=8000, reload=True)
 
 def start_celery_worker():
     """Start the Celery worker."""
