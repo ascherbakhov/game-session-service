@@ -1,15 +1,15 @@
 from datetime import datetime, timedelta
 from typing import Optional, Generator
 
-from sqlalchemy import create_engine, select
+from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from fastapi import HTTPException
 
 from app.database.tables.models import GameSession
 
 
-engine = create_engine("sqlite:///game_sessions.db")
+engine = create_async_engine("sqlite+aiosqlite:///game_sessions.db")
 AsyncSessionLocal = sessionmaker(
     autocommit=False, autoflush=False, bind=engine,
     class_=AsyncSession, expire_on_commit=False

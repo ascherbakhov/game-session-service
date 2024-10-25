@@ -18,5 +18,6 @@ watchfiles==0.24.0
 websockets==13.1
 sqlalchemy
 alembic
-pysqlite3==0.5.4
+aiosqlite
 celery
+greenlet
