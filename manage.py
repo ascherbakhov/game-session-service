@@ -11,14 +11,6 @@ from app.expired_sessions import celery_app
 
 # Manage.py script for managing FastAPI, Celery, and database setup
 
-@contextmanager
-def get_db_context() -> Session:
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 def start_api():
     """Start the FastAPI server."""
     uvicorn_run("app.game_session_logger:app", host="127.0.0.1", port=8000, reload=True)

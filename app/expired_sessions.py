@@ -2,7 +2,7 @@ from celery import Celery
 from celery.schedules import crontab
 
 
-from app.database.GameSessionDAO import SessionLocal, GameSessionDAO
+from app.database.GameSessionDAO import AsyncSessionLocal, GameSessionDAO
 
 # Celery setup
 celery_app = Celery(__name__, broker='redis://localhost:6379/0')
@@ -19,8 +19,8 @@ celery_app.conf.timezone = 'UTC'
 
 # Celery task to automatically end expired sessions
 @celery_app.task
-def celery_end_expired_sessions():
-    db = SessionLocal()
+async def celery_end_expired_sessions():
+    db = AsyncSessionLocal()
     dao = GameSessionDAO(db)
-    dao.end_expired_sessions()
+    await dao.end_expired_sessions()
     db.close()
