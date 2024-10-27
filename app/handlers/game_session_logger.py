@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import FastAPI, HTTPException, Depends
 
 from app.database.GameSessionDAO import GameSessionDAO, get_db
-from app.handlers.validation import StartSessionRequest, StopSessionRequest, HeartbitRequest
+from app.handlers.validation import StartSessionRequest, StopSessionRequest
 
 app = FastAPI()
 

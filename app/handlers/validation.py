@@ -5,6 +5,3 @@ class StartSessionRequest(BaseModel):
 
 class StopSessionRequest(BaseModel):
     session_id: int
-
-class HeartbitRequest(BaseModel):
-    session_id: int
