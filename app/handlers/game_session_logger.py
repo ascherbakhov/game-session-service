@@ -29,7 +29,7 @@ async def get_session(session_id: int, db: Session = Depends(get_db)):
     return {"session_id": session.id, "user_id": session.user_id, "session_start": session.session_start, "session_end": session.session_end}
 
 @app.post("/sessions/heartbeat/{session_id}")
-async def heartbeat(request: HeartbitRequest, db: Session = Depends(get_db)):
+async def heartbeat(session_id: int, db: Session = Depends(get_db)):
     dao = GameSessionDAO(db)
-    session = await dao.update_heartbeat(request.session_id)
+    session = await dao.update_heartbeat(session_id)
     return {"session_id": session.id, "user_id": session.user_id, "last_heartbeat": session.last_heartbeat}
