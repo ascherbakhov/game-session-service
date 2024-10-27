@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import FastAPI, HTTPException, Depends
 
 from app.database.GameSessionDAO import GameSessionDAO, get_db
+from app.database.tables.models import GameSession
 from app.handlers.validation import StartSessionRequest, StopSessionRequest
 
 app = FastAPI()
@@ -11,7 +12,8 @@ app = FastAPI()
 @app.post("/sessions/start/")
 async def start_session(request: StartSessionRequest, db: Session = Depends(get_db)):
     dao = GameSessionDAO(db)
-    session = await dao.create_session(request.user_id)
+    game_session = GameSession(user_id=request.user_id, platform=request.platform)
+    session = await dao.create_session(game_session)
     return {"session_id": session.id, "user_id": session.user_id, "session_start": session.session_start}
 
 @app.post("/sessions/end/{session_id}")
