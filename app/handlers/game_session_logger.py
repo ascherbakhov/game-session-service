@@ -1,5 +1,4 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
 from fastapi import FastAPI, HTTPException, Depends
 
 from app.database.GameSessionDAO import GameSessionDAO, get_db
@@ -11,7 +10,7 @@ app = FastAPI()
 
 # API endpoints
 @app.post("/sessions/start/")
-async def start_session(request: StartSessionRequest, db: Session = Depends(get_db)):
+async def start_session(request: StartSessionRequest, db: AsyncSession = Depends(get_db)):
     dao = GameSessionDAO(db)
     game_session = GameSession(user_id=request.user_id, platform=request.platform)
     session = await dao.create_session(game_session)
