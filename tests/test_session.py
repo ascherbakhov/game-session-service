@@ -47,9 +47,7 @@ async def test_heartbit_session():
     response_data = response.json()
     assert "last_heartbeat" in response_data
 
-    # Преобразование строки в объект datetime
     last_heartbeat = datetime.strptime(response_data["last_heartbeat"], "%Y-%m-%dT%H:%M:%S.%f")
 
-    # Получение timestamp (метки времени)
     timestamp = last_heartbeat.timestamp()
     assert timestamp > current_time

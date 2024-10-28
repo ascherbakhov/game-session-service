@@ -9,7 +9,6 @@ from app.handlers.validation import StartSessionRequest, StopSessionRequest, Hea
 app = FastAPI()
 
 
-# API endpoints
 @app.post("/sessions/start/", response_model=StartSessionResponse)
 async def start_session(request: StartSessionRequest, db: AsyncSession = Depends(get_db)):
     dao = GameSessionDAO(db)
