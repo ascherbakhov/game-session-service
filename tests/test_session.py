@@ -1,5 +1,5 @@
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 from httpx import AsyncClient
@@ -47,7 +47,11 @@ async def test_heartbit_session():
     response_data = response.json()
     assert "last_heartbeat" in response_data
 
-    last_heartbeat = datetime.strptime(response_data["last_heartbeat"], "%Y-%m-%dT%H:%M:%S.%f")
+    last_heartbeat = (
+        datetime.
+        strptime(response_data["last_heartbeat"], "%Y-%m-%dT%H:%M:%S.%f").
+        replace(tzinfo=timezone.utc).
+        timestamp()
+    )
 
-    timestamp = last_heartbeat.timestamp()
-    assert timestamp > current_time
+    assert last_heartbeat > current_time
