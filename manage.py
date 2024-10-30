@@ -1,10 +1,8 @@
 import sys
-from contextlib import contextmanager
 
-from sqlalchemy.orm import Session
 from uvicorn import run as uvicorn_run
 
-from app.database.GameSessionDAO import engine, SessionLocal
+from app.database.GameSessionDAO import engine
 from app.database.tables.models import Base
 from app.expired_sessions import celery_app
 

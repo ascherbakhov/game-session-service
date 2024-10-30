@@ -1,8 +1,11 @@
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 import pytest
+from freezegun import freeze_time
 from httpx import AsyncClient
+
+from app.database.GameSessionDAO import GameSessionDAO, AsyncSessionLocal
 from app.handlers.game_session_logger import app
 
 
@@ -55,3 +58,21 @@ async def test_heartbit_session():
     )
 
     assert last_heartbeat > current_time
+
+
+@pytest.mark.asyncio
+async def test_end_expired_sessions():
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/sessions/start/", json={"user_id": "test_user", "platform": "Linux"})
+        assert response.status_code == 200
+        session_id = response.json()['session_id']
+
+    with freeze_time(datetime.utcnow() + timedelta(minutes=8)):
+        async with AsyncSessionLocal() as session:
+            dao = GameSessionDAO(session)
+            await dao.end_expired_sessions()
+
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get(f"/sessions/{session_id}")
+        response_data = response.json()
+        assert response_data['session_end']
