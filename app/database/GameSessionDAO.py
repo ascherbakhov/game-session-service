@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 from typing import Optional, Generator
 
@@ -9,7 +10,7 @@ from fastapi import HTTPException
 from app.database.tables.models import GameSession
 
 
-engine = create_async_engine("sqlite+aiosqlite:///../game_sessions.db")
+engine = create_async_engine(os.environ['DATABASE_URL'])
 AsyncSessionLocal = sessionmaker(
     autocommit=False, autoflush=False, bind=engine,
     class_=AsyncSession, expire_on_commit=False
