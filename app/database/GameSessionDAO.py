@@ -52,8 +52,7 @@ class GameSessionDAO:
         await self.db_session.refresh(game_session)
         return game_session
 
-    async def end_expired_sessions(self):
-        expired_time = datetime.utcnow() - timedelta(minutes=10)  # Assume session expires after 10 minutes of inactivity
+    async def end_expired_sessions(self, expired_time):
         result = await self.db_session.execute(
             select(GameSession).filter(GameSession.session_end == None, GameSession.last_heartbeat < expired_time)
         )

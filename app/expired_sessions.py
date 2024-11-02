@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from celery import Celery
 from celery.schedules import crontab
 
@@ -22,5 +24,6 @@ celery_app.conf.timezone = 'UTC'
 async def celery_end_expired_sessions():
     db = AsyncSessionLocal()
     dao = GameSessionDAO(db)
-    await dao.end_expired_sessions()
+    expired_time = datetime.utcnow() - timedelta(minutes=10)
+    await dao.end_expired_sessions(expired_time)
     db.close()

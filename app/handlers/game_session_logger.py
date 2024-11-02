@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import FastAPI, HTTPException, Depends
 
@@ -35,3 +37,10 @@ async def heartbeat(session_id: int, db: AsyncSession = Depends(get_db)):
     dao = GameSessionDAO(db)
     session = await dao.update_heartbeat(session_id)
     return {"session_id": session.id, "user_id": session.user_id, "last_heartbeat": session.last_heartbeat}
+
+@app.delete("/sessions/end_expired")
+async def end_expired(expired_time: int, db: AsyncSession = Depends(get_db)):
+    dao = GameSessionDAO(db)
+    expired_datetime = datetime.fromtimestamp(expired_time).replace(tzinfo=timezone.utc)
+    await dao.end_expired_sessions(expired_datetime)
+    return {"status": "Expired sessions processed"}

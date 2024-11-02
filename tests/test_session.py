@@ -1,11 +1,9 @@
 import time
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 
 import pytest
-from freezegun import freeze_time
 from httpx import AsyncClient
 
-from app.database.GameSessionDAO import GameSessionDAO, AsyncSessionLocal
 from app.handlers.game_session_logger import app
 
 
@@ -67,12 +65,10 @@ async def test_end_expired_sessions():
         assert response.status_code == 200
         session_id = response.json()['session_id']
 
-    with freeze_time(datetime.utcnow() + timedelta(minutes=8)):
-        async with AsyncSessionLocal() as session:
-            dao = GameSessionDAO(session)
-            await dao.end_expired_sessions()
+        expired_time = int(time.time() + 10)
+        response = await ac.delete("/sessions/end_expired?expired_time={}".format(expired_time))
+        assert response.status_code == 200
 
-    async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.get(f"/sessions/{session_id}")
         response_data = response.json()
         assert response_data['session_end']
