@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException, Depends
 
 from app.database.GameSessionDAO import GameSessionDAO, get_db
 from app.database.tables.models import GameSession
-from app.handlers.validation import StartSessionRequest, StopSessionRequest, HeartbeatResponse, GetSessionResponse, \
+from app.handlers.schemas import StartSessionRequest, StopSessionRequest, HeartbeatResponse, GetSessionResponse, \
     EndSessionResponse, StartSessionResponse
 
 app = FastAPI()

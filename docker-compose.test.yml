@@ -18,7 +18,7 @@ services:
       context: .
       args:
         ENV: test
-    container_name: game_session_logger
+    container_name: game_session_logger_test
     environment:
       - DATABASE_URL=postgresql+asyncpg://test_user:test_password@db/test_database
     command: ["pytest", "--disable-warnings"]
