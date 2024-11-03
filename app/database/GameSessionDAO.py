@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timezone
 from typing import Optional, Generator
 
 from sqlalchemy import select
@@ -10,7 +10,7 @@ from fastapi import HTTPException
 from app.database.tables.models import GameSession
 
 
-engine = create_async_engine(os.environ['DATABASE_URL'])
+engine = create_async_engine("sqlite+aiosqlite:///../game_sessions.db")
 AsyncSessionLocal = sessionmaker(
     autocommit=False, autoflush=False, bind=engine,
     class_=AsyncSession, expire_on_commit=False
@@ -33,7 +33,7 @@ class GameSessionDAO:
         if not game_session:
             raise HTTPException(status_code=404, detail="Session not found")
 
-        game_session.session_end = datetime.utcnow()
+        game_session.session_end = datetime.now(timezone.utc)
         await self.db_session.commit()
         await self.db_session.refresh(game_session)
         return game_session
@@ -48,7 +48,7 @@ class GameSessionDAO:
         if not game_session:
             raise HTTPException(status_code=404, detail="Session not found")
 
-        game_session.last_heartbeat = datetime.utcnow()
+        game_session.last_heartbeat = datetime.now(timezone.utc)
         await self.db_session.commit()
         await self.db_session.refresh(game_session)
         return game_session
@@ -59,7 +59,7 @@ class GameSessionDAO:
         )
         sessions = result.scalars().all()
         for session in sessions:
-            session.session_end = datetime.utcnow()
+            session.session_end = datetime.now(timezone.utc)
 
         await self.db_session.commit()
 
