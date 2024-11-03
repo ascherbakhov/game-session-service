@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: production_database
+      POSTGRES_USER: app_user
+      POSTGRES_PASSWORD: app_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+  web:
+    image: game_session_logger:latest
+    container_name: game_session_logger
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://app_user:app_password@db/production_database
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - migrate
+    networks:
+      - app_network
+
+  migrate:
+    image: game_session_logger:latest
+    container_name: alembic_migration
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://app_user:app_password@db/production_database
+    entrypoint: ["alembic", "upgrade", "head"]
+    depends_on:
+      - db
+    networks:
+      - app_network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  app_network:
+    driver: bridge

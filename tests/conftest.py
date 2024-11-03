@@ -5,8 +5,8 @@ import pytest
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from app.database.tables.models import Base
+from app.database.utils import get_db
 from app.handlers.game_session_logger import app
-from app.database.GameSessionDAO import get_db
 
 @pytest.fixture(scope='session')
 def asyncEngine():

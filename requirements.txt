@@ -22,3 +22,4 @@ aiosqlite
 celery
 greenlet
 asyncpg
+psycopg2-binary

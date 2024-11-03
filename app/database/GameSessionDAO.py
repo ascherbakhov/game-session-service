@@ -1,22 +1,14 @@
-import os
-from datetime import datetime, timezone
-from typing import Optional, Generator
+from datetime import datetime
+from typing import Optional, AsyncGenerator
 
 from sqlalchemy import select
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+
+from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
 
 from app.database.tables.models import GameSession
 
 
-engine = create_async_engine("sqlite+aiosqlite:///../game_sessions.db")
-AsyncSessionLocal = sessionmaker(
-    autocommit=False, autoflush=False, bind=engine,
-    class_=AsyncSession, expire_on_commit=False
-)
-
-# DAO for accessing game session data
 class GameSessionDAO:
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
@@ -33,7 +25,7 @@ class GameSessionDAO:
         if not game_session:
             raise HTTPException(status_code=404, detail="Session not found")
 
-        game_session.session_end = datetime.now(timezone.utc)
+        game_session.session_end = datetime.now()
         await self.db_session.commit()
         await self.db_session.refresh(game_session)
         return game_session
@@ -48,7 +40,7 @@ class GameSessionDAO:
         if not game_session:
             raise HTTPException(status_code=404, detail="Session not found")
 
-        game_session.last_heartbeat = datetime.now(timezone.utc)
+        game_session.last_heartbeat = datetime.now()
         await self.db_session.commit()
         await self.db_session.refresh(game_session)
         return game_session
@@ -59,14 +51,6 @@ class GameSessionDAO:
         )
         sessions = result.scalars().all()
         for session in sessions:
-            session.session_end = datetime.now(timezone.utc)
+            session.session_end = datetime.now()
 
         await self.db_session.commit()
-
-
-async def get_db() -> Generator[AsyncSession, None, None]:
-    async with AsyncSessionLocal() as db:
-        try:
-            yield db
-        finally:
-            await db.close()
