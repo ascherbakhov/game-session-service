@@ -1,4 +1,0 @@
-httpx
-pytest-asyncio
-pytest
-freezegun

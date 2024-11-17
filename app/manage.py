@@ -1,5 +1,3 @@
-import sys
-
 from uvicorn import run as uvicorn_run
 
 from app.database.GameSessionDAO import engine
@@ -36,22 +34,3 @@ def reset_database():
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     print("Database has been reset.")
-
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python manage.py [command]")
-        sys.exit(1)
-
-    command = sys.argv[1]
-
-    if command == "start_api":
-        start_api()
-    elif command == "start_celery_worker":
-        start_celery_worker()
-    elif command == "start_celery_beat":
-        start_celery_beat()
-    elif command == "reset_db":
-        reset_database()
-    else:
-        print(f"Unknown command: {command}")
-        sys.exit(1)
