@@ -7,7 +7,7 @@ from app.expired_sessions import celery_app
 
 def start_api():
     """Start the FastAPI server."""
-    uvicorn_run("app.game_session_logger:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn_run("app.handlers.game_session_logger:app", host="127.0.0.1", port=8000, reload=True)
 
 def start_celery_worker():
     """Start the Celery worker."""
