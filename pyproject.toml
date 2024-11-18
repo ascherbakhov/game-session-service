@@ -5,6 +5,9 @@ description = "The Session Server is a lightweight microservice for managing use
 authors = ["ascherbakhov <a.scherbakhov@gmail.com>"]
 license = "Apache License 2.0"
 readme = "README.md"
+packages = [
+    { include = "app" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.12"

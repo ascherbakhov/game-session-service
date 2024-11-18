@@ -1,7 +1,5 @@
 from uvicorn import run as uvicorn_run
 
-from app.database.GameSessionDAO import engine
-from app.database.tables.models import Base
 from app.expired_sessions import celery_app
 
 
@@ -28,9 +26,3 @@ def start_celery_beat():
         "--loglevel=info",
     ]
     celery_app.start(argv)
-
-def reset_database():
-    """Drop and recreate all database tables."""
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
-    print("Database has been reset.")
