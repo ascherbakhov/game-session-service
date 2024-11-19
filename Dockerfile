@@ -2,13 +2,16 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-COPY . /app
+COPY pyproject.toml poetry.lock /app/
 
-RUN pip install --no-cache-dir poetry
+RUN pip install --no-cache-dir poetry \
+    && poetry config virtualenvs.in-project true
 
 ARG ENV=production
 
 ENV ENV=${ENV}
+ENV PATH="/app/.venv/bin:$PATH"
+
 
 RUN if [ "$ENV" = "production" ]; then \
         poetry install --only main --no-root; \
