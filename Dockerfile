@@ -3,8 +3,7 @@ FROM python:3.12-slim
 COPY pyproject.toml poetry.lock /
 COPY /app /app
 
-RUN pip install --no-cache-dir poetry \
-    && poetry config virtualenvs.in-project true
+RUN pip install poetry
 
 ARG ENV=production
 
