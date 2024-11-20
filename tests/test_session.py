@@ -10,7 +10,9 @@ from app.handlers.game_session_logger import app
 @pytest.mark.asyncio
 async def test_start_session():
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.post("/sessions/start/", json={"user_id": "test_user", "platform": "Linux"})
+        response = await ac.post(
+            "/sessions/start/", json={"user_id": "test_user", "platform": "Linux"}
+        )
 
     assert response.status_code == 200
 
@@ -19,10 +21,13 @@ async def test_start_session():
     assert response_data["user_id"] == "test_user"
     assert "session_start" in response_data
 
+
 @pytest.mark.asyncio
 async def test_get_created_session():
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.post("/sessions/start/", json={"user_id": "test_user", "platform": "Linux"})
+        response = await ac.post(
+            "/sessions/start/", json={"user_id": "test_user", "platform": "Linux"}
+        )
         assert response.status_code == 200
         response_data = response.json()
         response = await ac.get(f"/sessions/{response_data['session_id']}")
@@ -32,12 +37,15 @@ async def test_get_created_session():
     response_data = response.json()
     assert "session_id" in response_data
     assert response_data["user_id"] == "test_user"
-    assert ("session_start" in response_data)
+    assert "session_start" in response_data
+
 
 @pytest.mark.asyncio
 async def test_heartbit_session():
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.post("/sessions/start/", json={"user_id": "test_user", "platform": "Linux"})
+        response = await ac.post(
+            "/sessions/start/", json={"user_id": "test_user", "platform": "Linux"}
+        )
         assert response.status_code == 200
         response_data = response.json()
         current_time = time.time()
@@ -49,10 +57,9 @@ async def test_heartbit_session():
     assert "last_heartbeat" in response_data
 
     last_heartbeat = (
-        datetime.
-        strptime(response_data["last_heartbeat"], "%Y-%m-%dT%H:%M:%S.%f").
-        replace(tzinfo=timezone.utc).
-        timestamp()
+        datetime.strptime(response_data["last_heartbeat"], "%Y-%m-%dT%H:%M:%S.%f")
+        .replace(tzinfo=timezone.utc)
+        .timestamp()
     )
 
     assert last_heartbeat > current_time
@@ -61,12 +68,16 @@ async def test_heartbit_session():
 @pytest.mark.asyncio
 async def test_end_expired_sessions():
     async with AsyncClient(app=app, base_url="http://test") as ac:
-        response = await ac.post("/sessions/start/", json={"user_id": "test_user", "platform": "Linux"})
+        response = await ac.post(
+            "/sessions/start/", json={"user_id": "test_user", "platform": "Linux"}
+        )
         assert response.status_code == 200
         session_id = response.json()['session_id']
 
         expired_time = int(time.time() + 10)
-        response = await ac.delete("/sessions/end_expired?expired_time={}".format(expired_time))
+        response = await ac.delete(
+            "/sessions/end_expired?expired_time={}".format(expired_time)
+        )
         assert response.status_code == 200
 
         response = await ac.get(f"/sessions/{session_id}")

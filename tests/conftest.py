@@ -8,17 +8,16 @@ from app.database.tables.models import Base
 from app.database.utils import get_db
 from app.handlers.game_session_logger import app
 
+
 @pytest.fixture(scope='session')
 def asyncEngine():
     return create_async_engine(os.environ['DATABASE_URL'], echo=True)
 
+
 @pytest.fixture(scope='session')
 def asyncSessionLocal(asyncEngine):
-    return sessionmaker(
-        bind=asyncEngine,
-        class_=AsyncSession,
-        expire_on_commit=False
-    )
+    return sessionmaker(bind=asyncEngine, class_=AsyncSession, expire_on_commit=False)
+
 
 @pytest.fixture(scope="session")
 def event_loop():
@@ -29,15 +28,18 @@ def event_loop():
     yield loop
     loop.close()
 
+
 async def create_db(asyncEngine):
     async with asyncEngine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     print("Test database created.")
 
+
 async def drop_db(asyncEngine):
     async with asyncEngine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
     print("Test database dropped.")
+
 
 @pytest.fixture(scope="session", autouse=True)
 def set_test_database_url():

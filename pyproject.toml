@@ -57,3 +57,21 @@ start-api = "app.manage:start_api"
 start-celery-worker = "app.manage:start_celery_worker"
 start-celery-beat = "app.manage:start_celery_beat"
 reset-db = "app.manage:reset_database"
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+skip-string-normalization = true
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''

@@ -20,7 +20,9 @@ class GameSessionDAO:
         return game_session
 
     async def end_session(self, session_id: int) -> GameSession:
-        result = await self.db_session.execute(select(GameSession).filter(GameSession.id == session_id))
+        result = await self.db_session.execute(
+            select(GameSession).filter(GameSession.id == session_id)
+        )
         game_session = result.scalar().first()
         if not game_session:
             raise HTTPException(status_code=404, detail="Session not found")
@@ -31,11 +33,15 @@ class GameSessionDAO:
         return game_session
 
     async def get_session(self, session_id: int) -> Optional[GameSession]:
-        result = await self.db_session.execute(select(GameSession).filter(GameSession.id == session_id))
+        result = await self.db_session.execute(
+            select(GameSession).filter(GameSession.id == session_id)
+        )
         return result.scalars().first()
 
     async def update_heartbeat(self, session_id: int) -> GameSession:
-        result = await self.db_session.execute(select(GameSession).filter(GameSession.id == session_id))
+        result = await self.db_session.execute(
+            select(GameSession).filter(GameSession.id == session_id)
+        )
         game_session = result.scalars().first()
         if not game_session:
             raise HTTPException(status_code=404, detail="Session not found")
@@ -47,7 +53,10 @@ class GameSessionDAO:
 
     async def end_expired_sessions(self, expired_time):
         result = await self.db_session.execute(
-            select(GameSession).filter(GameSession.session_end == None, GameSession.last_heartbeat < expired_time)
+            select(GameSession).filter(
+                GameSession.session_end == None,
+                GameSession.last_heartbeat < expired_time,
+            )
         )
         sessions = result.scalars().all()
         for session in sessions:
