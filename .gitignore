@@ -1,1 +1,14 @@
-/game_sessions.db
+# Coverage report directory
+htmlcov/
+
+# Coverage data files
+.coverage
+coverage.xml
+
+# Python bytecode and cache files
+*.pyc
+__pycache__/
+
+# Virtual environment (if not managed by Poetry)
+.env/
+.venv/
