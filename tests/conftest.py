@@ -2,8 +2,9 @@ import asyncio
 import os
 
 import pytest
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
+
 from app.database.tables.models import Base
 from app.database.utils import get_db
 from app.handlers.game_session_logger import app

@@ -59,7 +59,7 @@ start-celery-beat = "app.manage:start_celery_beat"
 reset-db = "app.manage:reset_database"
 
 [tool.black]
-line-length = 88
+line-length = 120
 target-version = ["py312"]
 skip-string-normalization = true
 exclude = '''
@@ -75,3 +75,7 @@ exclude = '''
   | dist
 )/
 '''
+
+[tool.flake8]
+max-line-length = 120
+exclude = ["venv", ".venv", "migrations"]
