@@ -13,7 +13,7 @@ from app.handlers.schemas import (EndSessionResponse, GetSessionResponse,
 app = FastAPI()
 
 
-@app.post("/sessions/start/", response_model=StartSessionResponse)
+@app.post("/sessions/start/", response_model=StartSessionResponse, summary="Starting game session")
 async def start_session(request: StartSessionRequest, db: AsyncSession = Depends(get_db)):
     dao = GameSessionDAO(db)
     game_session = GameSession(user_id=request.user_id, platform=request.platform)
@@ -25,7 +25,7 @@ async def start_session(request: StartSessionRequest, db: AsyncSession = Depends
     }
 
 
-@app.post("/sessions/end/{session_id}", response_model=EndSessionResponse)
+@app.post("/sessions/end/{session_id}", response_model=EndSessionResponse, summary="Ending game session")
 async def end_session(request: StopSessionRequest, db: AsyncSession = Depends(get_db)):
     dao = GameSessionDAO(db)
     session = await dao.end_session(request.session_id)
@@ -37,7 +37,7 @@ async def end_session(request: StopSessionRequest, db: AsyncSession = Depends(ge
     }
 
 
-@app.get("/sessions/{session_id}", response_model=GetSessionResponse)
+@app.get("/sessions/{session_id}", response_model=GetSessionResponse, summary="Getting game session")
 async def get_session(session_id: int, db: AsyncSession = Depends(get_db)):
     dao = GameSessionDAO(db)
     session = await dao.get_session(session_id)
@@ -51,7 +51,7 @@ async def get_session(session_id: int, db: AsyncSession = Depends(get_db)):
     }
 
 
-@app.post("/sessions/heartbeat/{session_id}", response_model=HeartbeatResponse)
+@app.post("/sessions/heartbeat/{session_id}", response_model=HeartbeatResponse, summary="Making heartbeat for game session")
 async def heartbeat(session_id: int, db: AsyncSession = Depends(get_db)):
     dao = GameSessionDAO(db)
     session = await dao.update_heartbeat(session_id)
