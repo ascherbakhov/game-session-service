@@ -1,6 +1,6 @@
 FROM python:3.12-slim
 
-COPY pyproject.toml poetry.lock /
+COPY pyproject.toml poetry.lock default.env /
 COPY /app /app
 
 RUN pip install poetry

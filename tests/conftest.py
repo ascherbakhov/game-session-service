@@ -1,10 +1,10 @@
 import asyncio
-import os
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
+from app.config import app_config
 from app.database.tables.models import Base
 from app.database.utils import get_db
 from app.handlers.game_session_logger import app
@@ -12,7 +12,7 @@ from app.handlers.game_session_logger import app
 
 @pytest.fixture(scope='session')
 def asyncEngine():
-    return create_async_engine(os.environ['DATABASE_URL'], echo=True)
+    return create_async_engine(app_config.database_url, echo=True)
 
 
 @pytest.fixture(scope='session')
@@ -44,7 +44,7 @@ async def drop_db(asyncEngine):
 
 @pytest.fixture(scope="session", autouse=True)
 def set_test_database_url():
-    os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///file::memory:?cache=shared"
+    app_config.database_url = "sqlite+aiosqlite:///file::memory:?cache=shared"
 
 
 @pytest.fixture(scope="function", autouse=True)
