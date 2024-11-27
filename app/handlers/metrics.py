@@ -1,7 +1,7 @@
 from prometheus_client import REGISTRY, CONTENT_TYPE_LATEST, generate_latest
 from starlette.responses import Response
 
-from app.handlers.game_session_logger import app
+from app.handlers.main_app import app
 
 
 @app.get("/metrics")

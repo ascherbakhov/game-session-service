@@ -38,6 +38,9 @@ asyncpg = "0.30.0"
 psycopg2-binary = "2.9.10"
 pydantic-settings = "^2.6.1"
 prometheus-client = "^0.21.0"
+python-jose = "^3.3.0"
+passlib = "^1.7.4"
+python-multipart = "^0.0.17"
 
 
 [tool.poetry.group.dev.dependencies]

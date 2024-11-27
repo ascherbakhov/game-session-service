@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from app.config import app_config
 from app.database.tables.models import Base
 from app.database.utils import get_db
-from app.handlers.game_session_logger import app
+from app.handlers.main_app import app
 
 
 @pytest.fixture(scope='session')
