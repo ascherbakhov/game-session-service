@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 import pytest
 from httpx import AsyncClient
 
-from app.handlers.game_session_logger import app
+from app.handlers.main_app import app
 
 
 @pytest.mark.asyncio
