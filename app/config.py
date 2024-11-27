@@ -15,6 +15,7 @@ class Config(BaseSettings):
     database_url: str
     access_token_expire_minutes: int
     secret_key: str
+    sign_algorythm: str
 
 
 app_config = Config()

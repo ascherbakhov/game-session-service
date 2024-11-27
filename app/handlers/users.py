@@ -1,41 +1,24 @@
 import asyncio
-from datetime import timedelta, datetime
-from typing import Optional
+from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt, JWTError
-from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
 from app.config import app_config
 from app.database.dao.UsersDAO import UsersDAO
 from app.database.utils import get_db
+from app.handlers.utils import oauth2_scheme, verify_password, create_access_token
 
 users_router = APIRouter()
-
-
-def create_access_token(data: dict, expires_delta: Optional[timedelta]):
-    to_encode = data.copy()
-    expire = datetime.utcnow() + expires_delta
-    to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, app_config.secret_key, algorithm="HS256")
-
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)):
     dao = UsersDAO(db)
     try:
-        payload = jwt.decode(token, app_config.secret_key, algorithms=["HS256"])
+        payload = jwt.decode(token, app_config.secret_key, algorithms=[app_config.sign_algorythm])
         username: str = payload.get("sub")
         if username is None:
             raise HTTPException(
