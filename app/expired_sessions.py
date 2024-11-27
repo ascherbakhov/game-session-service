@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from celery import Celery
 from celery.schedules import crontab
 
-from app.database.GameSessionDAO import GameSessionDAO
+from app.database.dao.GameSessionDAO import GameSessionDAO
 from app.database.utils import get_db
 
 # Celery setup

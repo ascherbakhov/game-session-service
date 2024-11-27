@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
 from app.config import app_config
-from app.database.UsersDAO import UsersDAO
+from app.database.dao.UsersDAO import UsersDAO
 from app.database.utils import get_db
 
 users_router = APIRouter()

@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database.GameSessionDAO import GameSessionDAO
+from app.database.dao.GameSessionDAO import GameSessionDAO
 from app.database.tables.User import User
 from app.database.tables.models import GameSession
 from app.database.utils import get_db
