@@ -10,6 +10,7 @@ from starlette import status
 from app.config import app_config
 from app.database.dao.UsersDAO import UsersDAO
 from app.database.utils import get_db
+from app.handlers.schemas import UserCreate
 from app.handlers.utils import oauth2_scheme, verify_password, create_access_token
 
 users_router = APIRouter()
@@ -70,3 +71,16 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         expires_delta=timedelta(minutes=app_config.access_token_expire_minutes),
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@users_router.post("/register")
+async def register_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
+    dao = UsersDAO(db)
+    try:
+        await dao.register_user(user)
+    except ValueError:
+        raise HTTPException(
+            status_code=400, detail="Email or username already registered"
+        )
+    else:
+        return {"message": "User registered successfully"}
