@@ -11,27 +11,16 @@ import pytest
 
 
 @pytest.mark.asyncio
-async def test_get_created_session(user_token, async_client):
-    headers = {"Authorization": f"Bearer {user_token}"}
+async def test_create_session():
+        async_session = await anext(get_db())
+        dao = GameSessionDAO(async_session)
+        new_session = await GameSessionFactory.create(session=async_session)
 
-    async with async_client:
-        response = await async_client.post(
-            "/api/v1/sessions/start/",
-            json={"user_id": "test_user", "platform": "Linux"},
-            headers=headers,
-        )
-        assert response.status_code == 200
-        response_data = response.json()
-        session_id = response_data["session_id"]
+        created_session = await dao.create_session(new_session)
 
-        response = await async_client.get(f"/api/v1/sessions/{session_id}", headers=headers)
-
-    assert response.status_code == 200
-    response_data = response.json()
-    assert "session_id" in response_data
-    assert response_data["user_id"] == "test_user"
-    assert "session_start" in response_data
-
+        assert created_session.id is not None
+        assert created_session.session_start == new_session.session_start
+        assert created_session.session_end == new_session.session_end
 
 
 @pytest.mark.asyncio

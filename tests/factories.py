@@ -31,10 +31,9 @@ class GameSessionFactory(AsyncSQLAlchemyModelFactory):
     last_heartbeat = factory.LazyFunction(datetime.now)
 
 
-class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
+class UserFactory(AsyncSQLAlchemyModelFactory):
     class Meta:
         model = User
-        sqlalchemy_session = None
 
     id = factory.Sequence(lambda n: n + 1)
     username = factory.Faker("user_name")

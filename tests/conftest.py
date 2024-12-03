@@ -83,7 +83,7 @@ async def user_token(test_user, async_client):
     async with async_client:
         response = await async_client.post(
             "/login",
-            data={"username": test_user.username, "password": test_user.pasword},
+            data={"username": test_user.username, "password": test_user.password},
             headers={"Content-Type": "application/x-www-form-urlencoded"},
         )
         assert response.status_code == 200
