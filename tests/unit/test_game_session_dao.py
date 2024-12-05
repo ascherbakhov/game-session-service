@@ -5,7 +5,7 @@ import pytest
 from app.database.dao.GameSessionDAO import GameSessionDAO
 from app.database.tables.models import GameSession
 from app.database.utils import get_db
-from .factories import GameSessionFactory
+from tests.factories import GameSessionFactory
 
 import pytest
 

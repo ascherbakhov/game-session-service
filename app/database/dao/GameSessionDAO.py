@@ -30,11 +30,11 @@ class GameSessionDAO:
 
     async def get_session(self, session_id: int) -> Optional[GameSession]:
         result = await self.db_session.execute(select(GameSession).filter(GameSession.id == session_id))
-        return result.scalars().first()
+        return result.scalar()
 
     async def update_heartbeat(self, session_id: int) -> GameSession:
         result = await self.db_session.execute(select(GameSession).filter(GameSession.id == session_id))
-        game_session = result.scalars()
+        game_session = result.scalar()
         if not game_session:
             raise HTTPException(status_code=404, detail="Session not found")
 
