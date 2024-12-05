@@ -31,13 +31,18 @@ class GameSessionFactory(AsyncSQLAlchemyModelFactory):
     last_heartbeat = factory.LazyFunction(datetime.now)
 
 
+TEST_PASSWORD = 'password123'
+
+
 class UserFactory(AsyncSQLAlchemyModelFactory):
+
+
     class Meta:
         model = User
 
     id = factory.Sequence(lambda n: n + 1)
     username = factory.Faker("user_name")
     email = factory.Faker("email")
-    hashed_password = factory.LazyAttribute(lambda _: get_password_hash("password123"))
+    hashed_password = factory.LazyAttribute(lambda _: get_password_hash(TEST_PASSWORD))
     is_active = True
     full_name = factory.Faker("name")

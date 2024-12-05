@@ -25,11 +25,11 @@ async def start_session(
     request: StartSessionRequest, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)
 ):
     dao = GameSessionDAO(db)
-    game_session = GameSession(user_id=request.user_id, platform=request.platform)
+    game_session = GameSession(user_id=current_user.username, platform=request.platform)
     session = await dao.create_session(game_session)
     return {
         "session_id": session.id,
-        "user_id": current_user.id,
+        "user_id": current_user.username,
         "session_start": session.session_start,
     }
 

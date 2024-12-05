@@ -43,7 +43,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession
         )
 
 
-async def authenticate_user(username: str, password: str, db: AsyncSession = Depends(get_db)):
+async def authenticate_user(username: str, password: str, db: AsyncSession):
     dao = UsersDAO(db)
     user = await dao.get_user(username)
     if not user:
@@ -53,7 +53,7 @@ async def authenticate_user(username: str, password: str, db: AsyncSession = Dep
             detail="User not found",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    if not verify_password(password, user["hashed_password"]):
+    if not verify_password(password, user.hashed_password):
         await asyncio.sleep(0.5)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -64,10 +64,10 @@ async def authenticate_user(username: str, password: str, db: AsyncSession = Dep
 
 
 @users_router.post("/token")
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = await authenticate_user(form_data.username, form_data.password)
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
+    user = await authenticate_user(form_data.username, form_data.password, db)
     access_token = create_access_token(
-        data={"sub": user["username"]},
+        data={"sub": user.username},
         expires_delta=timedelta(minutes=app_config.access_token_expire_minutes),
     )
     return {"access_token": access_token, "token_type": "bearer"}

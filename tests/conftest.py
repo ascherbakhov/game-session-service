@@ -11,7 +11,7 @@ from app.database.dao.UsersDAO import UsersDAO
 from app.database.tables.models import Base
 from app.database.utils import get_db
 from app.handlers.main_app import app
-from tests.factories import UserFactory
+from tests.factories import UserFactory, TEST_PASSWORD
 
 
 @pytest.fixture(scope='session')
@@ -67,8 +67,10 @@ def setup_test_db(event_loop, asyncEngine, asyncSessionLocal):
 
 
 @pytest.fixture
-def async_client():
-    return AsyncClient(app=app, base_url="http://test")
+async def async_client():
+    client = AsyncClient(app=app, base_url="http://test")
+    yield client
+    await client.aclose()
 
 @pytest.fixture
 async def test_user():
@@ -80,11 +82,10 @@ async def test_user():
 
 @pytest.fixture
 async def user_token(test_user, async_client):
-    async with async_client:
-        response = await async_client.post(
-            "/login",
-            data={"username": test_user.username, "password": test_user.password},
-            headers={"Content-Type": "application/x-www-form-urlencoded"},
-        )
-        assert response.status_code == 200
-        return response.json()["access_token"]
+    response = await async_client.post(
+        "/api/v1/token",
+        data={"username": test_user.username, "password": TEST_PASSWORD},
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+    )
+    assert response.status_code == 200
+    return response.json()["access_token"]

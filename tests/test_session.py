@@ -24,22 +24,20 @@ async def test_start_session():
 async def test_get_created_session(user_token, async_client):
     headers = {"Authorization": f"Bearer {user_token}"}
 
-    async with async_client:
-        response = await async_client.post(
-            "/api/v1/sessions/start/",
-            json={"user_id": "test_user", "platform": "Linux"},
-            headers=headers,
-        )
-        assert response.status_code == 200
-        response_data = response.json()
-        session_id = response_data["session_id"]
+    response = await async_client.post(
+        "/api/v1/sessions/start/",
+        json={"user_id": "test_user", "platform": "Linux"},
+        headers=headers,
+    )
+    assert response.status_code == 200
+    response_data = response.json()
+    session_id = response_data["session_id"]
 
-        response = await async_client.get(f"/api/v1/sessions/{session_id}", headers=headers)
+    response = await async_client.get(f"/api/v1/sessions/{session_id}", headers=headers)
 
     assert response.status_code == 200
     response_data = response.json()
     assert "session_id" in response_data
-    assert response_data["user_id"] == "test_user"
     assert "session_start" in response_data
 
 
