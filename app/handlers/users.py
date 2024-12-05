@@ -79,8 +79,6 @@ async def register_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
     try:
         await dao.register_user(user)
     except ValueError:
-        raise HTTPException(
-            status_code=400, detail="Email or username already registered"
-        )
+        raise HTTPException(status_code=400, detail="Email or username already registered")
     else:
         return {"message": "User registered successfully"}
