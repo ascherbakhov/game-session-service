@@ -30,3 +30,7 @@ async def user_token(test_user, async_client):
     )
     assert response.status_code == 200
     return response.json()["access_token"]
+
+@pytest.fixture
+def auth_headers(user_token):
+    return {"Authorization": f"Bearer {user_token}"}

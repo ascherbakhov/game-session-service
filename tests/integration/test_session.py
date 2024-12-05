@@ -21,19 +21,17 @@ async def test_start_session(user_token, async_client):
 
 
 @pytest.mark.asyncio
-async def test_get_created_session(user_token, async_client):
-    headers = {"Authorization": f"Bearer {user_token}"}
-
+async def test_get_created_session(auth_headers, async_client):
     response = await async_client.post(
         "/api/v1/sessions/start/",
         json={"user_id": "test_user", "platform": "Linux"},
-        headers=headers,
+        headers=auth_headers,
     )
     assert response.status_code == 200
     response_data = response.json()
     session_id = response_data["session_id"]
 
-    response = await async_client.get(f"/api/v1/sessions/{session_id}", headers=headers)
+    response = await async_client.get(f"/api/v1/sessions/{session_id}", headers=auth_headers)
 
     assert response.status_code == 200
     response_data = response.json()
@@ -42,14 +40,12 @@ async def test_get_created_session(user_token, async_client):
 
 
 @pytest.mark.asyncio
-async def test_heartbit_session(user_token, async_client):
-    headers = {"Authorization": f"Bearer {user_token}"}
-
-    response = await async_client.post("/api/v1/sessions/start/", json={"platform": "Linux"}, headers=headers)
+async def test_heartbit_session(auth_headers, async_client):
+    response = await async_client.post("/api/v1/sessions/start/", json={"platform": "Linux"}, headers=auth_headers)
     assert response.status_code == 200
     response_data = response.json()
     current_time = time.time()
-    response = await async_client.post(f"/api/v1/sessions/heartbeat/{response_data['session_id']}", headers=headers)
+    response = await async_client.post(f"/api/v1/sessions/heartbeat/{response_data['session_id']}", headers=auth_headers)
 
     assert response.status_code == 200
 
@@ -66,10 +62,8 @@ async def test_heartbit_session(user_token, async_client):
 
 
 @pytest.mark.asyncio
-async def test_end_expired_sessions(async_client, user_token):
-    headers = {"Authorization": f"Bearer {user_token}"}
-
-    response = await async_client.post("/api/v1/sessions/start/", json={"platform": "Linux"}, headers=headers)
+async def test_end_expired_sessions(async_client, auth_headers):
+    response = await async_client.post("/api/v1/sessions/start/", json={"platform": "Linux"}, headers=auth_headers)
     assert response.status_code == 200
     session_id = response.json()['session_id']
 
@@ -77,6 +71,6 @@ async def test_end_expired_sessions(async_client, user_token):
     response = await async_client.delete("/api/v1/sessions/end_expired?expired_time={}".format(expired_time))
     assert response.status_code == 200
 
-    response = await async_client.get(f"/api/v1/sessions/{session_id}", headers=headers)
+    response = await async_client.get(f"/api/v1/sessions/{session_id}", headers=auth_headers)
     response_data = response.json()
     assert response_data['session_end']
