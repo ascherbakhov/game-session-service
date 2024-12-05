@@ -7,6 +7,7 @@ from app.database.dao.GameSessionDAO import GameSessionDAO
 from app.database.tables.User import User
 from app.database.tables.models import GameSession
 from app.database.utils import get_db
+from app.handlers import metrics
 from app.handlers.schemas import (
     EndSessionResponse,
     GetSessionResponse,
@@ -27,6 +28,7 @@ async def start_session(
     dao = GameSessionDAO(db)
     game_session = GameSession(user_id=current_user.username, platform=request.platform)
     session = await dao.create_session(game_session)
+    metrics.SESSIONS_CREATED.inc()
     return {
         "session_id": session.id,
         "user_id": current_user.username,
