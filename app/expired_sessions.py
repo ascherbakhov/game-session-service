@@ -7,16 +7,16 @@ from app.database.dao.GameSessionDAO import GameSessionDAO
 from app.database.utils import get_db
 
 # Celery setup
-celery_app = Celery(__name__, broker='redis://localhost:6379/0')
+celery_app = Celery(__name__, broker="redis://localhost:6379/0")
 
 # Celery Beat configuration to schedule periodic tasks
 celery_app.conf.beat_schedule = {
-    'end-expired-sessions-every-10-minutes': {
-        'task': 'celery_end_expired_sessions',
-        'schedule': crontab(minute='*/10'),  # Run every 10 minutes
+    "end-expired-sessions-every-10-minutes": {
+        "task": "celery_end_expired_sessions",
+        "schedule": crontab(minute="*/10"),  # Run every 10 minutes
     },
 }
-celery_app.conf.timezone = 'UTC'
+celery_app.conf.timezone = "UTC"
 
 
 # Celery task to automatically end expired sessions
