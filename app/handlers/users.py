@@ -1,5 +1,6 @@
 import asyncio
 from datetime import timedelta
+from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
@@ -15,32 +16,28 @@ from app.handlers.utils import oauth2_scheme, verify_password, create_access_tok
 
 users_router = APIRouter()
 
-
-async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)):
-    dao = UsersDAO(db)
+async def get_user_from_token(token: str, db: AsyncSession) -> Optional[dict]:
     try:
         payload = jwt.decode(token, app_config.secret_key, algorithms=[app_config.sign_algorythm])
         username: str = payload.get("sub")
-        if username is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid authentication credentials",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
+        if not username:
+            return None
+        dao = UsersDAO(db)
         user = await dao.get_user(username)
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid authentication credentials",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
         return user
     except JWTError:
+        return None
+
+
+async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)):
+    user = await get_user_from_token(token, db)
+    if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid authentication credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    return user
 
 
 async def authenticate_user(username: str, password: str, db: AsyncSession):

@@ -47,7 +47,6 @@ async def test_client():
 @pytest.fixture
 async def async_client(test_client):
     yield test_client
-    await test_client.aclose()
 
 
 @pytest.fixture
