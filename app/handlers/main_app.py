@@ -1,18 +1,23 @@
 from fastapi import FastAPI
-from prometheus_fastapi_instrumentator import Instrumentator
 
-from app.handlers.game_session_logger import v1_router
-from app.handlers.metrics import SESSIONS_CREATED
+from app.handlers.game_session_logger import game_session_router
+from app.handlers.limiter import init_rate_limiter, close_rate_limiter
+from app.handlers.metrics import setup_metrics
 from app.handlers.users import users_router
 
 app = FastAPI()
 
-app.include_router(users_router, prefix="/api/v1")
-app.include_router(v1_router, prefix="/api/v1")
-
-instrumentator = Instrumentator().instrument(app)
-
 
 @app.on_event("startup")
-async def setup_metrics():
-    instrumentator.add(lambda _: SESSIONS_CREATED).expose(app)
+async def startup():
+    await init_rate_limiter()
+    await setup_metrics(app)
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await close_rate_limiter()
+
+
+app.include_router(users_router, prefix="/api/v1")
+app.include_router(game_session_router, prefix="/api/v1")

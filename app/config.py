@@ -16,6 +16,8 @@ class Config(BaseSettings):
     access_token_expire_minutes: int
     secret_key: str
     sign_algorythm: str
+    expired_sessions_timeout: int
+    redis_url: str
 
 
 app_config = Config()
