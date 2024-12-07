@@ -71,3 +71,14 @@ reset-db = "app.manage:reset_database"
 [tool.ruff]
 line-length = 120
 target-version = "py312"
+
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
+[tool.pytest.ini_options.markers]
+unit = "mark a test as a unit test"
+integration = "mark a test as an integration test"
