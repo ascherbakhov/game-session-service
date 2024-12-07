@@ -40,6 +40,7 @@ services:
     environment:
       - DATABASE_URL=postgresql+asyncpg://app_user:app_password@db/production_database
       - REDIS_URL=redis://redis_cache:6379/0
+      - PYTHONPATH=/app
     entrypoint: ["python", "-m", "pytest", "-m", "tests/integration", "-v", "--log-cli-level=DEBUG"]
     depends_on:
       - db
