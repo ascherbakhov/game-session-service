@@ -5,6 +5,7 @@ import factory
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.tables import models
 from app.database.tables.User import User
+from app.database.tables.models import GameSession
 from app.handlers.external.utils import get_password_hash
 
 
@@ -13,7 +14,7 @@ class AsyncSQLAlchemyModelFactory(factory.Factory):
         abstract = True
 
     @classmethod
-    async def create(cls, session: AsyncSession, **kwargs):
+    async def create(cls, session: AsyncSession, **kwargs) -> GameSession:
         obj = cls.build(**kwargs)
         session.add(obj)
         await session.commit()

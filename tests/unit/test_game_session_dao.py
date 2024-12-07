@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+
 from app.database.dao.GameSessionDAO import GameSessionDAO
 from app.database.tables.models import GameSession
 from app.database.utils import get_db
@@ -52,10 +53,11 @@ async def test_update_heartbeat():
     dao = GameSessionDAO(async_session)
 
     session = await GameSessionFactory.create(session=async_session)
+    last_heartbit = session.last_heartbeat
 
     updated_session = await dao.update_heartbeat(session.id)
 
-    assert updated_session.last_heartbeat > session.last_heartbeat
+    assert updated_session.last_heartbeat > last_heartbit
 
 
 @pytest.mark.asyncio
