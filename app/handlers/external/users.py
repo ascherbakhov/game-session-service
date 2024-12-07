@@ -10,13 +10,15 @@ from starlette import status
 
 from app.config import app_config
 from app.database.dao.UsersDAO import UsersDAO
+from app.database.tables.User import User
 from app.database.utils import get_db
-from app.handlers.schemas import UserCreate
-from app.handlers.utils import oauth2_scheme, verify_password, create_access_token
+from app.handlers.external.schemas import UserCreate
+from app.handlers.external.utils import oauth2_scheme, verify_password, create_access_token
 
 users_router = APIRouter()
 
-async def get_user_from_token(token: str, db: AsyncSession) -> Optional[dict]:
+
+async def get_user_from_token(token: str, db: AsyncSession) -> Optional[User]:
     try:
         payload = jwt.decode(token, app_config.secret_key, algorithms=[app_config.sign_algorythm])
         username: str = payload.get("sub")

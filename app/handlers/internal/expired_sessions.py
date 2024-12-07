@@ -7,7 +7,7 @@ from app.config import app_config
 from app.database.dao.GameSessionDAO import GameSessionDAO
 from app.database.utils import get_db
 
-celery_app = Celery(__name__, broker="redis://redis_cache:6379/0")
+celery_app = Celery(__name__, broker=app_config.redis_url)
 
 celery_app.conf.beat_schedule = {
     "end-expired-sessions-every-10-minutes": {

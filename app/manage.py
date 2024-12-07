@@ -1,6 +1,6 @@
 from uvicorn import run as uvicorn_run
 
-from app.expired_sessions import celery_app
+from app.handlers.internal.expired_sessions import celery_app
 
 # Manage.py script for managing FastAPI, Celery, and database setup
 

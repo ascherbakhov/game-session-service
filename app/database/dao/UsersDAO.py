@@ -3,15 +3,15 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.tables.User import User
-from app.handlers.schemas import UserCreate
-from app.handlers.utils import get_password_hash
+from app.handlers.external.schemas import UserCreate
+from app.handlers.external.utils import get_password_hash
 
 
 class UsersDAO:
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
 
-    async def get_user(self, username):
+    async def get_user(self, username) -> User:
         result = await self.db_session.execute(select(User).where(User.username == username))
         user = result.scalar()
         return user

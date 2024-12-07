@@ -6,6 +6,7 @@ from fastapi_limiter.depends import RateLimiter
 from httpx import AsyncClient
 from starlette.responses import JSONResponse
 
+from app.config import app_config
 from app.database.utils import get_db
 from tests.factories import UserFactory, TEST_PASSWORD
 
@@ -70,3 +71,8 @@ async def user_token(test_user, async_client):
 @pytest.fixture
 def auth_headers(user_token):
     return {"Authorization": f"Bearer {user_token}"}
+
+
+@pytest.fixture
+def internal_token_headers():
+    return {"X-Internal-Token": app_config.internal_token}

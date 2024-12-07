@@ -4,7 +4,7 @@ from starlette.requests import Request
 
 from app.config import app_config
 from app.database.utils import get_db
-from app.handlers.users import get_user_from_token
+from app.handlers.external.users import get_user_from_token
 
 
 async def user_identifier(request: Request):

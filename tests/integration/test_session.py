@@ -21,7 +21,7 @@ async def test_start_session(user_token, async_client):
 
 
 @pytest.mark.asyncio
-async def test_get_created_session(auth_headers, async_client):
+async def test_get_created_session(auth_headers, async_client, internal_token_headers):
     response = await async_client.post(
         "/api/v1/sessions/start/",
         json={"user_id": "test_user", "platform": "Linux"},
@@ -31,7 +31,7 @@ async def test_get_created_session(auth_headers, async_client):
     response_data = response.json()
     session_id = response_data["session_id"]
 
-    response = await async_client.get(f"/api/v1/sessions/{session_id}", headers=auth_headers)
+    response = await async_client.get(f"/internal/v1/sessions/{session_id}", headers=internal_token_headers)
 
     assert response.status_code == 200
     response_data = response.json()
@@ -62,15 +62,17 @@ async def test_heartbit_session(auth_headers, async_client):
 
 
 @pytest.mark.asyncio
-async def test_end_expired_sessions(async_client, auth_headers):
+async def test_end_expired_sessions(async_client, auth_headers, internal_token_headers):
     response = await async_client.post("/api/v1/sessions/start/", json={"platform": "Linux"}, headers=auth_headers)
     assert response.status_code == 200
     session_id = response.json()['session_id']
 
     expired_time = int(time.time() + 10)
-    response = await async_client.delete("/api/v1/sessions/end_expired?expired_time={}".format(expired_time))
+    response = await async_client.delete(
+        "/internal/v1/sessions/end_expired?expired_time={}".format(expired_time), headers=internal_token_headers
+    )
     assert response.status_code == 200
 
-    response = await async_client.get(f"/api/v1/sessions/{session_id}", headers=auth_headers)
+    response = await async_client.get(f"/internal/v1/sessions/{session_id}", headers=internal_token_headers)
     response_data = response.json()
     assert response_data['session_end']
