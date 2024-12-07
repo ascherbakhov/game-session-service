@@ -16,6 +16,12 @@ from app.handlers.external.schemas import (
     EndSessionResponse,
 )
 from app.handlers.external.users import get_current_user
+from app.handlers.internal.utils import (
+    invalidate_user_session_if_exists,
+    save_session_to_cache,
+    set_current_session_for_user,
+    delete_session_from_cache,
+)
 
 game_session_router = APIRouter()
 
@@ -24,21 +30,33 @@ game_session_router = APIRouter()
 async def start_session(
     request: StartSessionRequest, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)
 ):
+    await invalidate_user_session_if_exists(current_user.username)
+
     dao = GameSessionDAO(db)
     game_session = GameSession(user_id=current_user.username, platform=request.platform)
     session = await dao.create_session(game_session)
     metrics.SESSIONS_CREATED.inc()
-    return {
+
+    session_data = {
         "session_id": session.id,
         "user_id": current_user.username,
         "session_start": session.session_start,
     }
 
+    await save_session_to_cache(session.id, session_data)
+
+    await set_current_session_for_user(current_user.username, session.id)
+
+    return session_data
+
 
 @game_session_router.post(
     "/sessions/end/{session_id}", response_model=EndSessionResponse, summary="Ending game session"
 )
-async def end_session(request: StopSessionRequest, db: AsyncSession = Depends(get_db), _=Depends(get_current_user)):
+async def end_session(request: StopSessionRequest, db: AsyncSession = Depends(get_db), user=Depends(get_current_user)):
+    await invalidate_user_session_if_exists(user.username)
+    await delete_session_from_cache(request.session_id)
+
     dao = GameSessionDAO(db)
     session = await dao.end_session(request.session_id)
     return {
