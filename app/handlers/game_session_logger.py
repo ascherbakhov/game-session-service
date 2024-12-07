@@ -26,8 +26,7 @@ game_session_router = APIRouter()
 @game_session_router.post(
     "/sessions/start/",
     response_model=StartSessionResponse,
-    summary="Starting game session",
-    dependencies=[Depends(RateLimiter(times=5, seconds=60))],
+    summary="Starting game session"
 )
 async def start_session(
     request: StartSessionRequest, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)
@@ -46,8 +45,7 @@ async def start_session(
 @game_session_router.post(
     "/sessions/end/{session_id}",
     response_model=EndSessionResponse,
-    summary="Ending game session",
-    dependencies=[Depends(RateLimiter(times=5, seconds=60))],
+    summary="Ending game session"
 )
 async def end_session(request: StopSessionRequest, db: AsyncSession = Depends(get_db), _=Depends(get_current_user)):
     dao = GameSessionDAO(db)
