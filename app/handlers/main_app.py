@@ -7,12 +7,12 @@ from app.handlers.internal.metrics import setup_metrics
 from app.handlers.external.users import users_router
 
 app = FastAPI()
+setup_metrics(app)
 
 
 @app.on_event("startup")
 async def startup():
     await init_rate_limiter()
-    await setup_metrics(app)
 
 
 @app.on_event("shutdown")

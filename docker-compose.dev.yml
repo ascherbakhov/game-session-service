@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   db:
     image: postgres:latest
@@ -44,7 +42,7 @@ services:
     container_name: alembic_migration
     environment:
       - DATABASE_URL=postgresql+psycopg2://app_user:app_password@db/production_database
-    entrypoint: ["alembic", "upgrade", "head"]
+    entrypoint: ["python", "-m", "alembic", "upgrade", "head"]
     depends_on:
       - db
     networks:
@@ -52,6 +50,8 @@ services:
 
 volumes:
   postgres_data:
+    driver: local
+  redis_data:
     driver: local
 
 networks:

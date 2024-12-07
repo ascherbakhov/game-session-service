@@ -4,5 +4,7 @@ from prometheus_fastapi_instrumentator import Instrumentator
 SESSIONS_CREATED = Counter("sessions_created_total", "Total number of created sessions")
 
 
-async def setup_metrics(app):
-    Instrumentator().instrument(app).add(lambda _: SESSIONS_CREATED).expose(app)
+def setup_metrics(app):
+    instrumentator = Instrumentator()
+    # instrumentator.add(lambda _: SESSIONS_CREATED)
+    instrumentator.instrument(app).expose(app)

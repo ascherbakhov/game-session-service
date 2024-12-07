@@ -23,18 +23,32 @@ services:
     networks:
       - app_network
 
-  web:
+  migrate:
     image: game_session_logger:latest
-    container_name: game_session_logger
+    container_name: alembic_migration
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://app_user:app_password@db/production_database
+    entrypoint: ["python", "-m", "alembic", "upgrade", "head"]
+    depends_on:
+      - db
+    networks:
+      - app_network
+
+  tests:
+    image: game_session_logger:latest
+    container_name: test_runner
     environment:
       - DATABASE_URL=postgresql+asyncpg://app_user:app_password@db/production_database
-    ports:
-      - "8000:8000"
+      - REDIS_URL=redis://redis_cache:6379/0
+    entrypoint: ["python", "-m", "pytest", "-m", "tests/unit", "-v", "--log-cli-level=DEBUG"]
     depends_on:
       - db
       - redis
+      - migrate
     networks:
       - app_network
+    volumes:
+      - ./:/app
 
 volumes:
   postgres_data:
