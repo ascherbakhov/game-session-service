@@ -1,17 +1,10 @@
 import json
-
-
-from app.config import app_config
-
-
-import redis.asyncio as redis
 from typing import Optional
 
-redis_client = redis.from_url(app_config.redis_url, decode_responses=True)
+from app.handlers.redis import redis_client
 
-
-USER_SESSION_KEY = "user_session:{}"  # Ключ для хранения текущей сессии юзера
-SESSION_KEY = "session:{}"  # Ключ для хранения данных сессии
+USER_SESSION_KEY = "user_session:{}"
+SESSION_KEY = "session:{}"
 
 
 async def get_session_from_cache(session_id: int) -> Optional[dict]:

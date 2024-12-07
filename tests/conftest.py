@@ -1,4 +1,5 @@
 import asyncio
+from unittest.mock import patch, AsyncMock
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
@@ -67,3 +68,4 @@ def setup_test_db(event_loop, asyncEngine, asyncSessionLocal):
     yield
     loop.run_until_complete(drop_db(asyncEngine))
     app.dependency_overrides.clear()
+

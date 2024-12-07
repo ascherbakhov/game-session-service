@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.database.utils import get_db
 from app.database.dao.GameSessionDAO import GameSessionDAO
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.handlers.internal.utils import get_session_from_cache, save_session_to_cache
+from app.handlers.internal import redis_utls
 from app.handlers.internal.middleware import verify_internal_access
 
 internal_game_session_router = APIRouter(dependencies=[Depends(verify_internal_access)])
@@ -12,7 +12,7 @@ internal_game_session_router = APIRouter(dependencies=[Depends(verify_internal_a
 
 @internal_game_session_router.get("/sessions/{session_id}")
 async def get_session_internal(session_id: int, db: AsyncSession = Depends(get_db)):
-    session_data = await get_session_from_cache(session_id)
+    session_data = await redis_utls.get_session_from_cache(session_id)
     if session_data:
         return session_data
 
@@ -28,7 +28,7 @@ async def get_session_internal(session_id: int, db: AsyncSession = Depends(get_d
         "session_end": session.session_end.isoformat() if session.session_end else None,
     }
 
-    await save_session_to_cache(session_id, session_data)
+    await redis_utls.save_session_to_cache(session_id, session_data)
     return session_data
 
 

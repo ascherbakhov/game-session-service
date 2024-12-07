@@ -5,12 +5,10 @@ import pytest
 
 
 @pytest.mark.asyncio
-async def test_start_session(user_token, async_client):
-    headers = {"Authorization": f"Bearer {user_token}"}
-
+async def test_start_session(auth_headers, async_client):
     response = await async_client.post(
         "/api/v1/sessions/start/", json={"platform": "Linux"},
-        headers=headers
+        headers=auth_headers
     )
 
     assert response.status_code == 200

@@ -1,10 +1,9 @@
-import redis
 from fastapi_limiter import FastAPILimiter
 from starlette.requests import Request
 
-from app.config import app_config
 from app.database.utils import get_db
 from app.handlers.external.users import get_user_from_token
+from app.handlers.redis import redis_client
 
 
 async def user_identifier(request: Request):
@@ -21,7 +20,6 @@ async def user_identifier(request: Request):
 
 
 async def init_rate_limiter():
-    redis_client = redis.from_url(app_config.redis_url, encoding="utf-8", decode_responses=True)
     await FastAPILimiter.init(redis_client)
     FastAPILimiter.identifier = user_identifier
 
