@@ -2,6 +2,7 @@ FROM python:3.12-slim
 
 COPY pyproject.toml poetry.lock default.env pytest.ini /
 COPY /app /app
+COPY /tests /tests
 
 RUN pip install poetry
 

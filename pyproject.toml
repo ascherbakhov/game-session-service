@@ -12,7 +12,6 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.12"
 annotated-types = "0.7.0"
-anyio = "4.6.2.post1"
 click = "8.1.7"
 fastapi = "0.115.2"
 h11 = "0.14.0"
