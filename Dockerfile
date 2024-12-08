@@ -13,9 +13,9 @@ ENV PATH="/app/.venv/bin:$PATH"
 
 
 RUN if [ "$ENV" = "production" ]; then \
-        poetry install --only main --no-root; \
+        poetry config virtualenvs.in-project true && poetry install --only main --no-root; \
     else \
-        poetry install --all-extras --no-root; \
+        poetry config virtualenvs.in-project true && poetry install --all-extras --no-root; \
     fi
 
 EXPOSE 8000

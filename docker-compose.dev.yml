@@ -42,7 +42,7 @@ services:
     container_name: alembic_migration
     environment:
       - DATABASE_URL=postgresql+psycopg2://app_user:app_password@db/production_database
-    entrypoint: ["python", "-m", "alembic", "upgrade", "head"]
+    entrypoint: ["/.venv/bin/python", "-m", "alembic", "upgrade", "head"]
     depends_on:
       - db
     networks:

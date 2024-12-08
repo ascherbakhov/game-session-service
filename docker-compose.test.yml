@@ -28,7 +28,7 @@ services:
     container_name: alembic_migration
     environment:
       - DATABASE_URL=postgresql+psycopg2://app_user:app_password@db/production_database
-    entrypoint: ["python", "-m", "alembic", "upgrade", "head"]
+    entrypoint: ["/.venv/bin/python", "-m", "alembic", "upgrade", "head"]
     depends_on:
       - db
     networks:
@@ -41,7 +41,7 @@ services:
       - DATABASE_URL=postgresql+asyncpg://app_user:app_password@db/production_database
       - REDIS_URL=redis://redis_cache:6379/0
       - PYTHONPATH=/app
-    entrypoint: ["python", "-m", "pytest", "-m", "tests/integration", "-v", "--log-cli-level=DEBUG"]
+    entrypoint: ["/.venv/bin/python", "-m", "pytest"]
     depends_on:
       - db
       - redis

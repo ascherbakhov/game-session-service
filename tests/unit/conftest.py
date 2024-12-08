@@ -20,16 +20,6 @@ def asyncSessionLocal(asyncEngine):
     return sessionmaker(bind=asyncEngine, class_=AsyncSession, expire_on_commit=False)
 
 
-@pytest.fixture(scope="session")
-def event_loop():
-    try:
-        loop = asyncio.get_running_loop()
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-    yield loop
-    loop.close()
-
-
 async def create_db(asyncEngine):
     async with asyncEngine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
