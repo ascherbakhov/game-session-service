@@ -23,7 +23,6 @@ class GameSessionFactory(AsyncSQLAlchemyModelFactory):
     class Meta:
         model = models.GameSession
 
-    id = factory.Sequence(lambda n: n + 1)
     user_id = factory.Faker('uuid4')
     platform = factory.LazyFunction(lambda: choice(("Windows", "MacOS", "Linux", "iOS", "Android")))
     session_start = factory.LazyFunction(datetime.now)
@@ -40,7 +39,6 @@ class UserFactory(AsyncSQLAlchemyModelFactory):
     class Meta:
         model = User
 
-    id = factory.Sequence(lambda n: n + 1)
     username = factory.Faker("user_name")
     email = factory.Faker("email")
     hashed_password = factory.LazyAttribute(lambda _: get_password_hash(TEST_PASSWORD))
