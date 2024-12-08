@@ -37,8 +37,8 @@ def set_test_database_url():
     app_config.database_url = "sqlite+aiosqlite:///file::memory:?cache=shared"
 
 
-@pytest.fixture(scope="function", autouse=True)
-def setup_test_db(event_loop, asyncEngine, asyncSessionLocal):
+@pytest.fixture(scope="session", autouse=True)
+def setup_test_db(asyncEngine, asyncSessionLocal):
     async def _get_test_db():
         async with asyncSessionLocal() as session:
             yield session

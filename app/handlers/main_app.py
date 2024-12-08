@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
 from app.handlers.external.game_sessions import game_session_router
@@ -6,18 +8,15 @@ from app.handlers.limiter import init_rate_limiter, close_rate_limiter
 from app.handlers.internal.metrics import setup_metrics
 from app.handlers.external.users import users_router
 
-app = FastAPI()
-setup_metrics(app)
 
-
-@app.on_event("startup")
-async def startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     await init_rate_limiter()
-
-
-@app.on_event("shutdown")
-async def shutdown():
+    yield
     await close_rate_limiter()
+
+app = FastAPI(lifespan=lifespan)
+setup_metrics(app)
 
 
 app.include_router(users_router, prefix="/api/v1")

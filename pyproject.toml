@@ -78,7 +78,12 @@ asyncio_default_fixture_loop_scope = "function"
 asyncio_mode = "auto"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-
-[tool.pytest.ini_options.markers]
-unit = "mark a test as a unit test"
-integration = "mark a test as an integration test"
+markers = [
+    "unit: mark a test as a unit test",
+    "integration: mark a test as an integration test",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning:sqlalchemy.*",
+    "ignore::PendingDeprecationWarning:starlette.*",
+    "ignore::DeprecationWarning:passlib.*"
+]

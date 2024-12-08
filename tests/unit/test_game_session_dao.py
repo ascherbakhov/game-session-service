@@ -20,6 +20,8 @@ async def test_create_session():
         assert created_session.session_start == new_session.session_start
         assert created_session.session_end == new_session.session_end
 
+        await async_session.close()
+
 
 @pytest.mark.asyncio
 async def test_end_session():
@@ -32,6 +34,9 @@ async def test_end_session():
 
     assert ended_session.session_end is not None
     assert ended_session.id == session.id
+
+    await async_session.close()
+
 
 
 @pytest.mark.asyncio
@@ -46,6 +51,9 @@ async def test_get_session():
     assert fetched_session is not None
     assert fetched_session.id == session.id
 
+    await async_session.close()
+
+
 
 @pytest.mark.asyncio
 async def test_update_heartbeat():
@@ -58,6 +66,9 @@ async def test_update_heartbeat():
     updated_session = await dao.update_heartbeat(session.id)
 
     assert updated_session.last_heartbeat > last_heartbit
+
+    await async_session.close()
+
 
 
 @pytest.mark.asyncio
@@ -78,3 +89,5 @@ async def test_end_expired_sessions():
 
     assert expired_session.session_end is not None
     assert active_session.session_end is None
+
+    await async_session.close()
