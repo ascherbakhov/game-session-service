@@ -45,8 +45,9 @@ def setup_test_db(asyncEngine, asyncSessionLocal):
 
     app.dependency_overrides[get_db] = _get_test_db
 
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
     loop.run_until_complete(create_db(asyncEngine))
     yield
     loop.run_until_complete(drop_db(asyncEngine))
+    loop.close()
     app.dependency_overrides.clear()
