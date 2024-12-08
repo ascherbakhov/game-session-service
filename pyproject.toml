@@ -74,7 +74,7 @@ target-version = "py312"
 
 
 [tool.pytest.ini_options]
-asyncio_default_fixture_loop_scope = "function"
+asyncio_default_fixture_loop_scope = "session"
 asyncio_mode = "auto"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
@@ -85,5 +85,6 @@ markers = [
 filterwarnings = [
     "ignore::DeprecationWarning:sqlalchemy.*",
     "ignore::PendingDeprecationWarning:starlette.*",
-    "ignore::DeprecationWarning:passlib.*"
+    "ignore::DeprecationWarning:passlib.*",
+    "ignore:The 'app' shortcut is now deprecated:DeprecationWarning:httpx.*"
 ]
