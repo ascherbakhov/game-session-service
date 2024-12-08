@@ -4,8 +4,7 @@ from random import choice
 import factory
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.tables import models
-from app.database.tables.User import User
-from app.database.tables.models import GameSession
+from app.database.tables.models import GameSession, User
 from app.handlers.external.utils import get_password_hash
 
 

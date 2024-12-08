@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database.tables.User import User
+from app.database.tables.models import User
 from app.handlers.external.schemas import UserCreate
 from app.handlers.external.utils import get_password_hash
 

@@ -4,8 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import app_config
 from app.database.dao.GameSessionDAO import GameSessionDAO
-from app.database.tables.User import User
-from app.database.tables.models import GameSession
+from app.database.tables.models import GameSession, User
 from app.database.utils import get_db
 from app.handlers.internal import metrics
 from app.handlers.external.schemas import (

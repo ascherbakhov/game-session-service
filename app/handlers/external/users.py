@@ -10,7 +10,7 @@ from starlette import status
 
 from app.config import app_config
 from app.database.dao.UsersDAO import UsersDAO
-from app.database.tables.User import User
+from app.database.tables.models import User
 from app.database.utils import get_db
 from app.handlers.external.schemas import UserCreate
 from app.handlers.external.utils import oauth2_scheme, verify_password, create_access_token
