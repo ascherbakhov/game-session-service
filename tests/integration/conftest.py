@@ -3,9 +3,13 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 
 from app.config import app_config
-from app.handlers.main_app import app, lifespan
+from app.handlers.main_app import make_app, app_lifespan
 from tests.factories import UserFactory, TEST_PASSWORD
 
+
+@pytest.fixture
+def app(event_loop):
+    return make_app()
 
 @pytest.fixture
 def async_engine():
@@ -18,11 +22,12 @@ def async_session_maker(async_engine):
     )
 
 
-@pytest.fixture(scope="module")
-async def async_client():
-    # FIXME
-    async with lifespan(app):
-        yield AsyncClient(app=app, base_url="http://test")
+@pytest.fixture
+async def async_client(app):
+    async with app_lifespan(app):
+        client = AsyncClient(app=app, base_url="http://test")
+        yield client
+        await client.aclose()
 
 @pytest.fixture
 async def test_user(async_session_maker):

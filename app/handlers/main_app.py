@@ -12,16 +12,20 @@ from app.handlers.external.users import users_router
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def app_lifespan(app: FastAPI):
     await init_rate_limiter()
     init_engine(app_config.database_url)
     yield app
     await close_rate_limiter()
 
-app = FastAPI(lifespan=lifespan)
-setup_metrics(app)
+
+def make_app():
+    app = FastAPI(lifespan=app_lifespan)
+    setup_metrics(app)
+    app.include_router(users_router, prefix="/api/v1")
+    app.include_router(game_session_router, prefix="/api/v1")
+    app.include_router(internal_game_session_router, prefix="/internal/v1")
+    return app
 
 
-app.include_router(users_router, prefix="/api/v1")
-app.include_router(game_session_router, prefix="/api/v1")
-app.include_router(internal_game_session_router, prefix="/internal/v1")
+app = make_app()
