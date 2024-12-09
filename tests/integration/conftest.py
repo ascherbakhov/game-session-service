@@ -1,3 +1,5 @@
+import asyncio
+
 import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
@@ -51,3 +53,15 @@ async def auth_headers(test_user, async_client):
 @pytest.fixture
 def internal_token_headers():
     return {"X-Internal-Token": app_config.internal_token}
+
+
+@pytest.yield_fixture(scope='module')
+def event_loop():
+    """
+    Create an instance of the default event loop for each test case.
+    "https://github.com/pytest-dev/pytest-asyncio/issues/38#issuecomment-264418154"
+    Not the best result, because tests are not totally isolated, but it works
+    """
+    loop = asyncio.get_event_loop_policy().new_event_loop()
+    yield loop
+    loop.close()
