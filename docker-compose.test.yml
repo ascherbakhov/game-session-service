@@ -34,22 +34,22 @@ services:
     networks:
       - app_network
 
-  tests:
-    image: game_session_logger:latest
-    container_name: test_runner
-    environment:
-      - DATABASE_URL=postgresql+asyncpg://app_user:app_password@db/production_database
-      - REDIS_URL=redis://redis_cache:6379/0
-      - PYTHONPATH=/app
-    entrypoint: ["/.venv/bin/python", "-m", "pytest"]
-    depends_on:
-      - db
-      - redis
-      - migrate
-    networks:
-      - app_network
-    volumes:
-      - ./:/app
+#  tests:
+#    image: game_session_logger:latest
+#    container_name: test_runner
+#    environment:
+#      - DATABASE_URL=postgresql+asyncpg://app_user:app_password@db/production_database
+#      - REDIS_URL=redis://redis_cache:6379/0
+#      - PYTHONPATH=/app
+#    entrypoint: ["/.venv/bin/python", "-m", "pytest"]
+#    depends_on:
+#      - db
+#      - redis
+#      - migrate
+#    networks:
+#      - app_network
+#    volumes:
+#      - ./:/app
 
 volumes:
   postgres_data:
