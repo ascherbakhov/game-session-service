@@ -3,13 +3,13 @@ from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 
 from app.config import app_config
-from app.handlers.main_app import app
+from app.handlers.main_app import app, lifespan
 from tests.factories import UserFactory, TEST_PASSWORD
 
 
 @pytest.fixture
 def async_engine():
-    return create_async_engine(app_config.database_url, echo=True)
+    return create_async_engine(app_config.database_url)
 
 @pytest.fixture
 def async_session_maker(async_engine):
@@ -18,10 +18,11 @@ def async_session_maker(async_engine):
     )
 
 
-@pytest.fixture
-def async_client():
-    client = AsyncClient(app=app, base_url="http://test")
-    return client
+@pytest.fixture(scope="module")
+async def async_client():
+    # FIXME
+    async with lifespan(app):
+        yield AsyncClient(app=app, base_url="http://test")
 
 @pytest.fixture
 async def test_user(async_session_maker):
@@ -32,7 +33,6 @@ async def test_user(async_session_maker):
 
 @pytest.fixture
 async def auth_headers(test_user, async_client):
-    async with AsyncClient(app=app, base_url="http://test") as async_client:
         response = await async_client.post(
             "/api/v1/token",
             data={"username": test_user.username, "password": TEST_PASSWORD},

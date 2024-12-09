@@ -15,7 +15,7 @@ from app.handlers.external.users import users_router
 async def lifespan(app: FastAPI):
     await init_rate_limiter()
     init_engine(app_config.database_url)
-    yield
+    yield app
     await close_rate_limiter()
 
 app = FastAPI(lifespan=lifespan)
