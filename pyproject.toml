@@ -86,5 +86,6 @@ filterwarnings = [
     "ignore::DeprecationWarning:sqlalchemy.*",
     "ignore::PendingDeprecationWarning:starlette.*",
     "ignore::DeprecationWarning:passlib.*",
-    "ignore:The 'app' shortcut is now deprecated:DeprecationWarning:httpx.*"
+    "ignore:The 'app' shortcut is now deprecated:DeprecationWarning:httpx.*",
+    "ignore:datetime.datetime.utcnow.*:DeprecationWarning:jose.*"
 ]

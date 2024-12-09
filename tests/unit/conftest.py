@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.config import app_config
 from app.database.tables.models import Base
-from app.database.utils import get_db
+from app.database.utils import get_db, init_engine
 from app.handlers.main_app import app
 
 
@@ -42,7 +42,7 @@ def setup_test_db(asyncEngine, asyncSessionLocal):
     async def _get_test_db():
         async with asyncSessionLocal() as session:
             yield session
-
+    init_engine(app_config.database_url)
     app.dependency_overrides[get_db] = _get_test_db
 
     loop = asyncio.new_event_loop()

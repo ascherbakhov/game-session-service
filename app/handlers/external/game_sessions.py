@@ -34,7 +34,7 @@ async def start_session(
     session_data = {
         "session_id": session.id,
         "user_id": current_user.username,
-        "session_start": session.session_start,
+        "session_start": session.session_start.isoformat(),
     }
 
     await redis_utils.save_session_to_cache(session.id, session_data)
