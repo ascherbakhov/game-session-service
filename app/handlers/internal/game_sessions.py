@@ -35,6 +35,6 @@ async def get_session_internal(session_id: int, db: AsyncSession = Depends(get_d
 @internal_game_session_router.delete("/sessions/end_expired")
 async def end_expired(expired_time: int, db: AsyncSession = Depends(get_db)):
     dao = GameSessionDAO(db)
-    expired_datetime = datetime.fromtimestamp(expired_time).replace(tzinfo=timezone.utc)
+    expired_datetime = datetime.fromtimestamp(expired_time)
     await dao.end_expired_sessions(expired_datetime)
     return {"status": "Expired sessions processed"}

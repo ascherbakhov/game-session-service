@@ -6,6 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.tables.models import GameSession
+from app.handlers.internal import redis_utls as redis_utils
 
 
 class GameSessionDAO:
@@ -53,5 +54,7 @@ class GameSessionDAO:
         sessions = result.scalars().all()
         for session in sessions:
             session.session_end = datetime.now()
+            await redis_utils.invalidate_user_session_if_exists(session.user_id)
+            await redis_utils.delete_session_from_cache(session.id)
 
         await self.db_session.commit()

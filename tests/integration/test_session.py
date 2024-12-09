@@ -73,4 +73,4 @@ async def test_end_expired_sessions(async_client, auth_headers, internal_token_h
 
     response = await async_client.get(f"/internal/v1/sessions/{session_id}", headers=internal_token_headers)
     response_data = response.json()
-    assert response_data['session_end']
+    assert response_data['session_end'] is not None
