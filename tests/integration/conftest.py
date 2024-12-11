@@ -10,15 +10,15 @@ from tests.factories import UserFactory, TEST_PASSWORD
 
 
 @pytest.fixture
-def app(event_loop):
+def app():
     return make_app()
 
 @pytest.fixture
-def async_engine():
+async def async_engine():
     return create_async_engine(app_config.database_url)
 
 @pytest.fixture
-def async_session_maker(async_engine):
+async def async_session_maker(async_engine):
     return async_sessionmaker(
         bind=async_engine, class_=AsyncSession, expire_on_commit=False, autoflush=False
     )
@@ -53,15 +53,3 @@ async def auth_headers(test_user, async_client):
 @pytest.fixture
 def internal_token_headers():
     return {"X-Internal-Token": app_config.internal_token}
-
-
-@pytest.yield_fixture(scope='module')
-def event_loop():
-    """
-    Create an instance of the default event loop for each test case.
-    "https://github.com/pytest-dev/pytest-asyncio/issues/38#issuecomment-264418154"
-    Not the best result, because tests are not totally isolated, but it works
-    """
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
