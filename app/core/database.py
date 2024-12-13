@@ -21,6 +21,7 @@ def fini_engine():
     engine = None
     async_session_maker = None
 
+
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     async with async_session_maker() as db:
         yield db

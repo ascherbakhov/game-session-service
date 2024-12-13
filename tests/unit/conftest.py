@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.core.config import app_config
 from app.database.tables.models import Base
-from app.core.database import get_db, init_engine
+from app.core.database import init_engine, get_db
 from app.main_app import app
 
 

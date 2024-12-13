@@ -31,8 +31,8 @@ class EndSessionResponse(BaseModel):
     session_end: Optional[datetime]
 
 
-class UserCreate(BaseModel):
-    username: str
-    email: str
-    password: str
-    full_name: str = None
+class GetSessionResponse(BaseModel):
+    session_id: int
+    user_id: str
+    session_start: datetime
+    session_end: Optional[datetime]
