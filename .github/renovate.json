@@ -1,0 +1,17 @@
+{
+  "extends": ["config:base"],
+  "schedule": ["every weekend"],
+  "packageRules": [
+    {
+      "matchManagers": ["poetry"],
+      "groupName": "Major Python Updates",
+      "matchUpdateTypes": ["major"]
+    },
+    {
+      "matchManagers": ["poetry"],
+      "groupName": "Minor and Patch Updates",
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    }
+  ]
+}
