@@ -1,9 +1,9 @@
 from fastapi_limiter import FastAPILimiter
 from starlette.requests import Request
 
-from app.database.utils import get_db
-from app.handlers.external.users import get_user_from_token
-from app.handlers.redis import redis_client
+from app.core.database import get_db
+from app.api.v1.handlers.external.users import get_user_from_token
+from app.core.redis import redis_client
 
 
 async def user_identifier(request: Request):

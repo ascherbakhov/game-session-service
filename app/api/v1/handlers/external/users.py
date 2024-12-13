@@ -8,12 +8,12 @@ from jose import jwt, JWTError
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
-from app.config import app_config
-from app.database.dao.UsersDAO import UsersDAO
+from app.core.config import app_config
+from app.database.dao.users_dao import UsersDAO
 from app.database.tables.models import User
-from app.database.utils import get_db
-from app.handlers.external.schemas import UserCreate
-from app.handlers.external.utils import oauth2_scheme, verify_password, create_access_token
+from app.core.database import get_db
+from app.api.v1.handlers.external.schemas import UserCreate
+from app.api.v1.handlers.external.utils import oauth2_scheme, verify_password, create_access_token
 
 users_router = APIRouter()
 

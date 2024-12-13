@@ -4,10 +4,10 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from app.config import app_config
+from app.core.config import app_config
 from app.database.tables.models import Base
-from app.database.utils import get_db, init_engine
-from app.handlers.main_app import app
+from app.core.database import get_db, init_engine
+from app.main_app import app
 
 
 @pytest.fixture(scope='session')

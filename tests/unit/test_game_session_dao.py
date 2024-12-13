@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 
-from app.database.dao.GameSessionDAO import GameSessionDAO
+from app.database.dao.session_dao import GameSessionDAO
 from app.database.tables.models import GameSession
-from app.database.utils import get_db
+from app.core.database import get_db
 from tests.factories import GameSessionFactory
 
 import pytest

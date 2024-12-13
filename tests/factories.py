@@ -5,7 +5,7 @@ import factory
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.tables import models
 from app.database.tables.models import GameSession, User
-from app.handlers.external.utils import get_password_hash
+from app.api.v1.handlers.external.utils import get_password_hash
 
 
 class AsyncSQLAlchemyModelFactory(factory.Factory):

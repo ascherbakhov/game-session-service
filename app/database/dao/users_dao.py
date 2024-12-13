@@ -3,8 +3,8 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.tables.models import User
-from app.handlers.external.schemas import UserCreate
-from app.handlers.external.utils import get_password_hash
+from app.api.v1.handlers.external.schemas import UserCreate
+from app.api.v1.handlers.external.utils import get_password_hash
 
 
 class UsersDAO:

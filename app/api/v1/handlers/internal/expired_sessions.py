@@ -3,9 +3,9 @@ from datetime import datetime, timedelta
 from celery import Celery
 from celery.schedules import crontab
 
-from app.config import app_config
-from app.database.dao.GameSessionDAO import GameSessionDAO
-from app.database.utils import get_db
+from app.core.config import app_config
+from app.database.dao.session_dao import GameSessionDAO
+from app.core.database import get_db
 
 celery_app = Celery(__name__, broker=app_config.redis_url)
 

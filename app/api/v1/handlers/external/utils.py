@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from passlib.context import CryptContext
 
-from app.config import app_config
+from app.core.config import app_config
 
 
 def get_password_hash(password):

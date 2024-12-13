@@ -1,18 +1,21 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException
-from app.database.utils import get_db
-from app.database.dao.GameSessionDAO import GameSessionDAO
+from app.core.database import get_db
+from app.core.redis import get_cache
+from app.database.dao.redis.session_cache_dao import SessionCacheDAO
+from app.database.dao.session_dao import GameSessionDAO
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.handlers.internal import redis_utls
-from app.handlers.internal.middleware import verify_internal_access
+from app.database.dao.redis import session_cache_dao
+from app.api.v1.handlers.internal.middleware import verify_internal_access
 
 internal_game_session_router = APIRouter(dependencies=[Depends(verify_internal_access)])
 
 
 @internal_game_session_router.get("/sessions/{session_id}")
-async def get_session_internal(session_id: int, db: AsyncSession = Depends(get_db)):
-    session_data = await redis_utls.get_session_from_cache(session_id)
+async def get_session_internal(session_id: int, db: AsyncSession = Depends(get_db), cache=Depends(get_cache)):
+    session_cache = SessionCacheDAO(cache)
+    session_data = await session_cache.get_session_from_cache(session_id)
     if session_data:
         return session_data
 
@@ -28,7 +31,7 @@ async def get_session_internal(session_id: int, db: AsyncSession = Depends(get_d
         "session_end": session.session_end.isoformat() if session.session_end else None,
     }
 
-    await redis_utls.save_session_to_cache(session_id, session_data)
+    await session_cache.save_session_to_cache(session_id, session_data)
     return session_data
 
 

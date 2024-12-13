@@ -1,12 +1,11 @@
-import asyncio
-
 import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 
-from app.config import app_config
-from app.handlers.main_app import make_app, app_lifespan
+from app.core.config import app_config
+from app.main_app import make_app, app_lifespan
 from tests.factories import UserFactory, TEST_PASSWORD
+from app.main_app import make_app
 
 
 @pytest.fixture
@@ -41,7 +40,7 @@ async def test_user(async_session_maker):
 @pytest.fixture
 async def auth_headers(test_user, async_client):
         response = await async_client.post(
-            "/api/v1/token",
+            "/api/v1/users/token",
             data={"username": test_user.username, "password": TEST_PASSWORD},
             headers={"Content-Type": "application/x-www-form-urlencoded"},
         )

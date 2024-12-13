@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from starlette.requests import Request
 
-from app.config import app_config
+from app.core.config import app_config
 
 
 async def verify_internal_access(request: Request):

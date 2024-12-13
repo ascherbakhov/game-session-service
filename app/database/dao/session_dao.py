@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.tables.models import GameSession
-from app.handlers.internal import redis_utls as redis_utils
+from app.database.dao.redis import session_cache_dao as redis_utils
 
 
 class GameSessionDAO:
