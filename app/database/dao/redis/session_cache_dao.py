@@ -3,6 +3,7 @@ from typing import Optional
 
 from app.core.redis import redis_client
 
+
 class SessionCacheDAO:
     USER_SESSION_KEY = "user_session:{}"
     SESSION_KEY = "session:{}"

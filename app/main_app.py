@@ -7,7 +7,7 @@ from app.core.database import init_engine, fini_engine
 from app.api.v1.handlers.external.game_sessions import game_session_router
 from app.api.v1.handlers.internal.game_sessions import internal_game_session_router
 from app.api.v1.handlers.limiter import init_rate_limiter, close_rate_limiter
-from app.api.v1.handlers.internal.metrics import setup_metrics
+from app.core.metrics.setup import setup_metrics
 from app.api.v1.handlers.external.users import users_router
 
 

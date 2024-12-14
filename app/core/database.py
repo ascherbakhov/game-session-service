@@ -10,9 +10,8 @@ def init_engine(database_url):
     global engine, async_session_maker
     assert engine is None
     engine = create_async_engine(database_url)
-    async_session_maker = async_sessionmaker(
-        bind=engine, class_=AsyncSession, expire_on_commit=False, autoflush=False
-    )
+    async_session_maker = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False, autoflush=False)
+
 
 def fini_engine():
     global engine, async_session_maker

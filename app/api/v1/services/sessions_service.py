@@ -1,5 +1,9 @@
+import asyncio
+from datetime import datetime, timedelta
+
 from fastapi import HTTPException
 
+from app.core.config import app_config
 from app.database.tables.models import GameSession
 
 
@@ -18,11 +22,10 @@ class SessionsService:
             "session_id": session.id,
             "user_id": current_user.username,
             "session_start": session.session_start.isoformat(),
-            "session_end": session.session_end
+            "session_end": session.session_end,
         }
 
         await self.__session_cache_dao.save_session_to_cache(session.id, session_data)
-
         await self.__session_cache_dao.set_current_session_for_user(current_user.username, session.id)
 
         return session_data
@@ -65,3 +68,14 @@ class SessionsService:
 
         await self.__session_cache_dao.save_session_to_cache(session_id, session_data)
         return session_data
+
+    async def end_expired_sessions(self):
+        expired_time = datetime.now() - timedelta(minutes=app_config.expired_sessions_timeout)
+        expired_sessions = await self.__session_dao.end_expired_sessions(expired_time)
+
+        tasks = []
+        for session in expired_sessions:
+            tasks.append(self.__session_cache_dao.invalidate_user_session_if_exists(session.user_id))
+            tasks.append(self.__session_cache_dao.delete_session_from_cache(session.id))
+
+        result = asyncio.gather(*tasks)
