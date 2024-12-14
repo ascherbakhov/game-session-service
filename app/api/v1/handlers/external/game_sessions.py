@@ -10,7 +10,7 @@ from app.api.v1.schemas.session import (
     EndSessionResponse,
 )
 from app.core.config import app_config
-from app.core.metrics import setup
+from app.core.metrics import prometheus_metrics
 
 game_session_router = APIRouter()
 
@@ -22,7 +22,7 @@ async def start_session(
     current_user=Depends(get_current_user),
 ):
     result = await session_service.start_session(current_user, request.platform)
-    setup.SESSIONS_CREATED.inc()
+    prometheus_metrics.SESSIONS_CREATED.inc()
 
     return result
 
