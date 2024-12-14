@@ -46,7 +46,7 @@ async def test_user(async_session_maker):
 @pytest.fixture
 async def auth_headers(test_user, async_client):
         response = await async_client.post(
-            "/api/v1/users/token",
+            "/api/v1/auth/token",
             data={"username": test_user.username, "password": TEST_PASSWORD},
             headers={"Content-Type": "application/x-www-form-urlencoded"},
         )

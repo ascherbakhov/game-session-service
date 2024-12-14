@@ -7,10 +7,10 @@ from app.api.v1.schemas.users import UserCreate
 from app.api.v1.services.auth_service import AuthService
 from app.exceptions import UserNotFound, Unauthorized
 
-users_router = APIRouter()
+auth_router = APIRouter()
 
 
-@users_router.post("/token")
+@auth_router.post("/token")
 async def login(
     form_data: OAuth2PasswordRequestForm = Depends(), auth_service: AuthService = Depends(get_auth_service)
 ):
@@ -31,7 +31,7 @@ async def login(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@users_router.post("/register")
+@auth_router.post("/register")
 async def register_user(user: UserCreate, auth_service: AuthService = Depends(get_auth_service)):
     try:
         await auth_service.register_user(user)
