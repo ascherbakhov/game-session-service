@@ -60,7 +60,7 @@ async def test_heartbit_session(auth_headers, async_client):
 
 
 @pytest.mark.asyncio
-async def test_end_expired_sessions(async_client, auth_headers, internal_token_headers):
+async def test_end_expired_sessions(async_client, auth_headers, internal_token_headers, zero_expired_timeout):
     response = await async_client.post("/api/v1/sessions/start/", json={"platform": "Linux"}, headers=auth_headers)
     assert response.status_code == 200
     session_id = response.json()['session_id']

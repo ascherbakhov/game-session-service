@@ -1,8 +1,6 @@
 import asyncio
 from datetime import datetime, timedelta
 
-from fastapi import HTTPException
-
 from app.core.config import app_config
 from app.database.tables.models import GameSession
 
@@ -57,7 +55,7 @@ class SessionsService:
 
         session = await self.__session_dao.get_session(session_id)
         if not session:
-            raise HTTPException(404, "Session not found")
+            return None
 
         session_data = {
             "session_id": session.id,
@@ -78,4 +76,4 @@ class SessionsService:
             tasks.append(self.__session_cache_dao.invalidate_user_session_if_exists(session.user_id))
             tasks.append(self.__session_cache_dao.delete_session_from_cache(session.id))
 
-        result = asyncio.gather(*tasks)
+        await asyncio.gather(*tasks)

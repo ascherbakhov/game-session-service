@@ -1,8 +1,8 @@
 from fastapi_limiter import FastAPILimiter
 from starlette.requests import Request
 
+from app.api.v1.dependencies import get_auth_service
 from app.core.database import get_db
-from app.api.v1.handlers.external.users import get_user_from_token
 from app.core.redis import redis_client
 
 
@@ -11,8 +11,9 @@ async def user_identifier(request: Request):
     if not token:
         return "anonymous"
     db = await anext(get_db())
+    auth_service = get_auth_service(db)
 
-    user = await get_user_from_token(token, db)
+    user = await auth_service.get_user_by_token(token)
     if not user:
         return "anonymous"
 

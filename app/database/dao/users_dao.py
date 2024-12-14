@@ -4,7 +4,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.tables.models import User
 from app.api.v1.schemas.users import UserCreate
-from app.api.v1.handlers.external.utils import get_password_hash
 
 
 class UsersDAO:
@@ -16,8 +15,7 @@ class UsersDAO:
         user = result.scalar()
         return user
 
-    async def register_user(self, user: UserCreate):
-        hashed_password = get_password_hash(user.password)
+    async def create_user(self, user: UserCreate, hashed_password):
         new_user = User(
             username=user.username,
             email=user.email,

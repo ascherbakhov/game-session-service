@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends
 from fastapi_limiter.depends import RateLimiter
 
-from app.api.v1.dependencies import get_session_service
-from app.api.v1.handlers.external.users import get_current_user
+from app.api.v1.dependencies import get_session_service, get_current_user
 from app.api.v1.schemas.session import (
     StartSessionRequest,
     StopSessionRequest,
@@ -12,7 +11,6 @@ from app.api.v1.schemas.session import (
 )
 from app.core.config import app_config
 from app.core.metrics import setup
-from app.database.tables.models import User
 
 game_session_router = APIRouter()
 
@@ -21,7 +19,7 @@ game_session_router = APIRouter()
 async def start_session(
     request: StartSessionRequest,
     session_service=Depends(get_session_service),
-    current_user: User = Depends(get_current_user),
+    current_user=Depends(get_current_user),
 ):
     result = await session_service.start_session(current_user, request.platform)
     setup.SESSIONS_CREATED.inc()

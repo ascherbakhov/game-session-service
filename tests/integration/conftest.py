@@ -12,6 +12,12 @@ from app.main_app import make_app
 def app():
     return make_app()
 
+
+@pytest.fixture
+def zero_expired_timeout():
+    app_config.expired_sessions_timeout = 0
+
+
 @pytest.fixture
 async def async_engine():
     return create_async_engine(app_config.database_url)
