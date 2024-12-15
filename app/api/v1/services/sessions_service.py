@@ -5,7 +5,7 @@ from typing import Optional
 from app.core.logging import session_logger
 from app.database.dao.redis.session_cache_dao import SessionCacheDAO
 from app.database.dao.session_dao import SessionDAO
-from app.database.tables.models import GameSession, User
+from app.database.tables.models import User
 
 
 class SessionsService:
@@ -27,8 +27,7 @@ class SessionsService:
         )
         await self.__session_cache_dao.invalidate_user_session_if_exists(current_user.id)
 
-        game_session = GameSession(user_id=current_user.username, platform=platform)
-        session = await self.__session_dao.create_session(game_session)
+        session = await self.__session_dao.create_session(current_user.username, platform)
 
         session_data = {
             "session_id": session.id,

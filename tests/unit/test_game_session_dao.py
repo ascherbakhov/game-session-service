@@ -14,7 +14,7 @@ async def test_create_session():
         dao = SessionDAO(async_session)
         new_session = await GameSessionFactory.create(session=async_session)
 
-        created_session = await dao.create_session(new_session)
+        created_session = await dao.create_session(new_session.user_id, new_session.platform)
 
         assert created_session.id is not None
         assert created_session.session_start == new_session.session_start

@@ -12,7 +12,8 @@ class SessionDAO:
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
 
-    async def create_session(self, game_session: GameSession) -> GameSession:
+    async def create_session(self, username: str, platform: str) -> GameSession:
+        game_session = GameSession(user_id=username, platform=platform)
         self.db_session.add(game_session)
         await self.db_session.commit()
         await self.db_session.refresh(game_session)

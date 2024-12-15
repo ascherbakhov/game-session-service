@@ -9,15 +9,18 @@ from app.api.v1.handlers.internal.game_sessions import internal_game_session_rou
 from app.api.v1.handlers.limiter import init_rate_limiter, close_rate_limiter
 from app.core.middlewares.metrics_middleware import setup_metrics
 from app.api.v1.handlers.external.users import auth_router
+from app.core.redis import init_redis, fini_redis
 
 
 @asynccontextmanager
 async def app_lifespan(app: FastAPI):
+    init_redis(app_config.redis_url)
     await init_rate_limiter()
     init_engine(app_config.database_url)
     yield app
     fini_engine()
     await close_rate_limiter()
+    await fini_redis()
 
 
 def make_app():

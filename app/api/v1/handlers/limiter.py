@@ -3,7 +3,7 @@ from starlette.requests import Request
 
 from app.api.v1.dependencies import get_auth_service
 from app.core.database import get_db
-from app.core.redis import redis_client
+from app.core.redis import get_cache
 
 
 async def user_identifier(request: Request):
@@ -21,7 +21,8 @@ async def user_identifier(request: Request):
 
 
 async def init_rate_limiter():
-    await FastAPILimiter.init(redis_client)
+    cache = get_cache()
+    await FastAPILimiter.init(cache)
     FastAPILimiter.identifier = user_identifier
 
 
