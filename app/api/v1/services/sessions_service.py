@@ -2,7 +2,6 @@ import asyncio
 from datetime import datetime, timedelta
 from typing import Optional
 
-from app.core.config import app_config
 from app.core.logging import session_logger
 from app.database.dao.redis.session_cache_dao import SessionCacheDAO
 from app.database.dao.session_dao import SessionDAO
@@ -10,13 +9,22 @@ from app.database.tables.models import GameSession, User
 
 
 class SessionsService:
-    def __init__(self, sessions_cache_dao: SessionCacheDAO, session_dao: SessionDAO, request_id: str = None):
+    def __init__(
+        self,
+        sessions_cache_dao: SessionCacheDAO,
+        session_dao: SessionDAO,
+        expired_session_timeout: int,
+        request_id: str = None,
+    ):
         self.__session_cache_dao = sessions_cache_dao
         self.__session_dao = session_dao
-        self.__request_id = request_id or 'no-request-context'
+        self.__request_id = request_id or "no-request-context"
+        self.__expired_session_timeout = expired_session_timeout
 
     async def start_session(self, current_user: User, platform: str) -> dict:
-        session_logger.info(f"[RequestID={self.__request_id}] Start session for user {current_user.id} on platform {platform}")
+        session_logger.info(
+            f"[RequestID={self.__request_id}] Start session for user {current_user.id} on platform {platform}"
+        )
         await self.__session_cache_dao.invalidate_user_session_if_exists(current_user.id)
 
         game_session = GameSession(user_id=current_user.username, platform=platform)
@@ -75,7 +83,7 @@ class SessionsService:
         return session_data
 
     async def end_expired_sessions(self) -> None:
-        expired_time = datetime.now() - timedelta(minutes=app_config.expired_sessions_timeout)
+        expired_time = datetime.now() - timedelta(minutes=self.__expired_session_timeout)
         expired_sessions = await self.__session_dao.end_expired_sessions(expired_time)
 
         tasks = []

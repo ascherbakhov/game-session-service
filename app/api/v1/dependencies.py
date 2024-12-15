@@ -23,7 +23,7 @@ def get_session_service(request: Request = None, db=Depends(get_db), cache=Depen
     if request:
         request_id = getattr(request.state, "request_id", None)
 
-    return SessionsService(session_cache_dao, session_dao, request_id)
+    return SessionsService(session_cache_dao, session_dao, app_config.expired_sessions_timeout, request_id)
 
 
 async def verify_internal_access(request: Request):
@@ -34,7 +34,7 @@ async def verify_internal_access(request: Request):
 
 def get_auth_service(db=Depends(get_db)) -> AuthService:
     users_dao = UsersDAO(db)
-    return AuthService(users_dao)
+    return AuthService(users_dao=users_dao, authConfig=app_config.auth)
 
 
 async def get_current_user(auth_service: AuthService = Depends(get_auth_service), token=Depends(oauth2_scheme)) -> User:

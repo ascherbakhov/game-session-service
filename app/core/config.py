@@ -11,15 +11,22 @@ env_file = os.getenv("ENV_FILE", DEFAULT_ENV_FILE)
 load_dotenv(env_file)
 
 
-class Config(BaseSettings):
-    debug: bool
-    database_url: str
+class AuthSettings(BaseSettings):
     access_token_expire_minutes: int
     secret_key: str
     sign_algorythm: str
+
+
+class AppConfig(BaseSettings):
+    debug: bool
+    database_url: str
+    auth: AuthSettings
     expired_sessions_timeout: int
     redis_url: str
     internal_token: str
 
+    class Config:
+        env_nested_delimiter = "__"
 
-app_config = Config()
+
+app_config = AppConfig()

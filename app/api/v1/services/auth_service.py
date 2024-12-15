@@ -4,17 +4,18 @@ from typing import Optional
 
 from jose import jwt, JWTError
 
-from app.core.password_utils import get_password_hash, pwd_context
+from app.core.config import AuthSettings
+from app.core.password_utils import get_password_hash, verify_password
 from app.api.v1.schemas.users import UserCreate
-from app.core.config import app_config
 from app.database.dao.users_dao import UsersDAO
 from app.database.tables.models import User
 from app.exceptions import UserNotFound, Unauthorized
 
 
 class AuthService:
-    def __init__(self, users_dao: UsersDAO):
+    def __init__(self, users_dao: UsersDAO, authConfig: AuthSettings):
         self.__users_dao = users_dao
+        self.__authSettings = authConfig
 
     async def get_user(self, username: str) -> User:
         return await self.__users_dao.get_user(username)
@@ -27,7 +28,7 @@ class AuthService:
         user = await self.authenticate_user(username, password)
         access_token = self.__create_access_token(
             data={"sub": user.username},
-            expires_delta=timedelta(minutes=app_config.access_token_expire_minutes),
+            expires_delta=timedelta(minutes=self.__authSettings.access_token_expire_minutes),
         )
         return access_token
 
@@ -36,14 +37,14 @@ class AuthService:
         if not user:
             await asyncio.sleep(0.5)
             raise UserNotFound()
-        if not self.__verify_password(password, user.hashed_password):
+        if not verify_password(password, user.hashed_password):
             await asyncio.sleep(0.5)
             raise Unauthorized()
         return user
 
-    async def get_user_by_token(self, token: str) -> User:
+    async def get_user_by_token(self, token: str) -> Optional[User]:
         try:
-            payload = jwt.decode(token, app_config.secret_key, algorithms=[app_config.sign_algorythm])
+            payload = jwt.decode(token, self.__authSettings.secret_key, algorithms=[self.__authSettings.sign_algorythm])
             username: str = payload.get("sub")
             if not username:
                 return None
@@ -52,11 +53,8 @@ class AuthService:
         except JWTError:
             return None
 
-    def __verify_password(self, plain_password: str, hashed_password: str) -> bool:
-        return pwd_context.verify(plain_password, hashed_password)
-
     def __create_access_token(self, data: dict, expires_delta: Optional[timedelta]) -> str:
         to_encode = data.copy()
         expire = datetime.now(UTC) + expires_delta
         to_encode.update({"exp": expire})
-        return jwt.encode(to_encode, app_config.secret_key, algorithm=app_config.sign_algorythm)
+        return jwt.encode(to_encode, self.__authSettings.secret_key, algorithm=self.__authSettings.sign_algorythm)
