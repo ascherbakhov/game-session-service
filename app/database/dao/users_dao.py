@@ -3,7 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.tables.models import User
-from app.api.v1.schemas.users import UserCreate
+from app.api.v1.DTOs.users import UserCreate
 
 
 class UsersDAO:

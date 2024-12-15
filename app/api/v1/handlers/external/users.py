@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from starlette import status
 
 from app.api.v1.dependencies import get_auth_service
-from app.api.v1.schemas.users import UserCreate
+from app.api.v1.DTOs.users import UserCreate
 from app.api.v1.services.auth_service import AuthService
 from app.exceptions import UserNotFound, Unauthorized
 

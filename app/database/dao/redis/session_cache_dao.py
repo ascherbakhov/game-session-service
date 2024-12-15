@@ -1,6 +1,8 @@
 import json
 from typing import Optional
 
+from app.api.v1.DTOs.session import SessionDTO
+
 
 class SessionCacheDAO:
     USER_SESSION_KEY = "user_session:{}"
@@ -15,8 +17,8 @@ class SessionCacheDAO:
             return json.loads(session_data)
         return None
 
-    async def save_session_to_cache(self, session_id: int, session_data: dict, ttl: int = 3600):
-        await self.redis_cache.set(self.SESSION_KEY.format(session_id), json.dumps(session_data), ex=ttl)
+    async def save_session_to_cache(self, session_id: int, session_data: SessionDTO, ttl: int = 3600):
+        await self.redis_cache.set(self.SESSION_KEY.format(session_id), json.dumps(dict(session_data)), ex=ttl)
 
     async def delete_session_from_cache(self, session_id: int):
         await self.redis_cache.delete(self.SESSION_KEY.format(session_id))

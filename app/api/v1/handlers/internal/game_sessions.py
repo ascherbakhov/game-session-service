@@ -1,13 +1,12 @@
-from http.client import HTTPException
-
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from app.api.v1.dependencies import get_session_service, verify_internal_access
+from app.api.v1.DTOs.session import SessionDTO
 
 internal_game_session_router = APIRouter(dependencies=[Depends(verify_internal_access)])
 
 
-@internal_game_session_router.get("/sessions/{session_id}")
+@internal_game_session_router.get("/sessions/{session_id}", response_model=SessionDTO)
 async def get_session_internal(session_id: int, session_service=Depends(get_session_service)):
     session_data = await session_service.get_session(session_id)
     if not session_data:

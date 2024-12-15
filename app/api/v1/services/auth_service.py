@@ -6,7 +6,7 @@ from jose import jwt, JWTError
 
 from app.core.config import AuthSettings
 from app.core.password_utils import get_password_hash, verify_password
-from app.api.v1.schemas.users import UserCreate
+from app.api.v1.DTOs.users import UserCreate
 from app.database.dao.users_dao import UsersDAO
 from app.database.tables.models import User
 from app.exceptions import UserNotFound, Unauthorized
