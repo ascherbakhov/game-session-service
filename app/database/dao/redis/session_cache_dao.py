@@ -1,6 +1,8 @@
 import json
 from typing import Optional
 
+from cachecontrol.caches import RedisCache
+
 from app.core.redis import redis_client
 
 
@@ -8,7 +10,7 @@ class SessionCacheDAO:
     USER_SESSION_KEY = "user_session:{}"
     SESSION_KEY = "session:{}"
 
-    def __init__(self, redis_cache):
+    def __init__(self, redis_cache: RedisCache):
         self.redis_cache = redis_cache
 
     async def get_session_from_cache(self, session_id: int) -> Optional[dict]:

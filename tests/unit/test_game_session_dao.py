@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from app.database.dao.session_dao import GameSessionDAO
+from app.database.dao.session_dao import SessionDAO
 from app.database.tables.models import GameSession
 from app.core.database import get_db
 from tests.factories import GameSessionFactory
@@ -11,7 +11,7 @@ import pytest
 @pytest.mark.asyncio
 async def test_create_session():
         async_session = await anext(get_db())
-        dao = GameSessionDAO(async_session)
+        dao = SessionDAO(async_session)
         new_session = await GameSessionFactory.create(session=async_session)
 
         created_session = await dao.create_session(new_session)
@@ -26,7 +26,7 @@ async def test_create_session():
 @pytest.mark.asyncio
 async def test_end_session():
     async_session = await anext(get_db())
-    dao = GameSessionDAO(async_session)
+    dao = SessionDAO(async_session)
 
     session = await GameSessionFactory.create(session=async_session)
 
@@ -42,7 +42,7 @@ async def test_end_session():
 @pytest.mark.asyncio
 async def test_get_session():
     async_session = await anext(get_db())
-    dao = GameSessionDAO(async_session)
+    dao = SessionDAO(async_session)
 
     session = await GameSessionFactory.create(session=async_session)
 
@@ -58,7 +58,7 @@ async def test_get_session():
 @pytest.mark.asyncio
 async def test_update_heartbeat():
     async_session = await anext(get_db())
-    dao = GameSessionDAO(async_session)
+    dao = SessionDAO(async_session)
 
     session = await GameSessionFactory.create(session=async_session)
     last_heartbit = session.last_heartbeat
@@ -74,7 +74,7 @@ async def test_update_heartbeat():
 @pytest.mark.asyncio
 async def test_end_expired_sessions():
     async_session = await anext(get_db())
-    dao = GameSessionDAO(async_session)
+    dao = SessionDAO(async_session)
 
     active_session = await GameSessionFactory.create(session=async_session)
     expired_session = await GameSessionFactory.create(

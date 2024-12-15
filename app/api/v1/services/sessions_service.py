@@ -1,18 +1,21 @@
 import asyncio
 from datetime import datetime, timedelta
+from typing import Optional
 
 from app.core.config import app_config
 from app.core.logging import session_logger
-from app.database.tables.models import GameSession
+from app.database.dao.redis.session_cache_dao import SessionCacheDAO
+from app.database.dao.session_dao import SessionDAO
+from app.database.tables.models import GameSession, User
 
 
 class SessionsService:
-    def __init__(self, sessions_cache_dao, session_dao, request_id: str = None):
+    def __init__(self, sessions_cache_dao: SessionCacheDAO, session_dao: SessionDAO, request_id: str = None):
         self.__session_cache_dao = sessions_cache_dao
         self.__session_dao = session_dao
         self.__request_id = request_id or 'no-request-context'
 
-    async def start_session(self, current_user, platform):
+    async def start_session(self, current_user: User, platform: str) -> dict:
         session_logger.info(f"[RequestID={self.__request_id}] Start session for user {current_user.id} on platform {platform}")
         await self.__session_cache_dao.invalidate_user_session_if_exists(current_user.id)
 
@@ -31,7 +34,7 @@ class SessionsService:
 
         return session_data
 
-    async def end_session(self, current_user, session_id):
+    async def end_session(self, current_user: User, session_id: int) -> dict:
         session_logger.info(f"[RequestID={self.__request_id}] End session for user {current_user.id}")
         await self.__session_cache_dao.invalidate_user_session_if_exists(current_user.username)
         await self.__session_cache_dao.delete_session_from_cache(session_id)
@@ -44,7 +47,7 @@ class SessionsService:
             "session_end": session.session_end,
         }
 
-    async def heartbit(self, session_id):
+    async def heartbit(self, session_id: int) -> dict:
         session = await self.__session_dao.update_heartbeat(session_id)
         return {
             "session_id": session.id,
@@ -52,7 +55,7 @@ class SessionsService:
             "last_heartbeat": session.last_heartbeat,
         }
 
-    async def get_session(self, session_id):
+    async def get_session(self, session_id: int) -> Optional[dict, None]:
         session_data = await self.__session_cache_dao.get_session_from_cache(session_id)
         if session_data:
             return session_data
@@ -71,7 +74,7 @@ class SessionsService:
         await self.__session_cache_dao.save_session_to_cache(session_id, session_data)
         return session_data
 
-    async def end_expired_sessions(self):
+    async def end_expired_sessions(self) -> None:
         expired_time = datetime.now() - timedelta(minutes=app_config.expired_sessions_timeout)
         expired_sessions = await self.__session_dao.end_expired_sessions(expired_time)
 

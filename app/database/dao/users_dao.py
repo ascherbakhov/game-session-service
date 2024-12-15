@@ -10,12 +10,12 @@ class UsersDAO:
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
 
-    async def get_user(self, username) -> User:
+    async def get_user(self, username: str) -> User:
         result = await self.db_session.execute(select(User).where(User.username == username))
         user = result.scalar()
         return user
 
-    async def create_user(self, user: UserCreate, hashed_password):
+    async def create_user(self, user: UserCreate, hashed_password: str) -> User:
         new_user = User(
             username=user.username,
             email=user.email,

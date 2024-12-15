@@ -6,7 +6,7 @@ engine = None
 async_session_maker = None
 
 
-def init_engine(database_url):
+def init_engine(database_url: str):
     global engine, async_session_maker
     assert engine is None
     engine = create_async_engine(database_url)
