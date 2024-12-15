@@ -2,16 +2,19 @@ import asyncio
 from datetime import datetime, timedelta
 
 from app.core.config import app_config
+from app.core.logging import session_logger
 from app.database.tables.models import GameSession
 
 
 class SessionsService:
-    def __init__(self, sessions_cache_dao, session_dao):
+    def __init__(self, sessions_cache_dao, session_dao, request_id: str = None):
         self.__session_cache_dao = sessions_cache_dao
         self.__session_dao = session_dao
+        self.__request_id = request_id or 'no-request-context'
 
     async def start_session(self, current_user, platform):
-        await self.__session_cache_dao.invalidate_user_session_if_exists(current_user.username)
+        session_logger.info(f"[RequestID={self.__request_id}] Start session for user {current_user.id} on platform {platform}")
+        await self.__session_cache_dao.invalidate_user_session_if_exists(current_user.id)
 
         game_session = GameSession(user_id=current_user.username, platform=platform)
         session = await self.__session_dao.create_session(game_session)
@@ -28,8 +31,9 @@ class SessionsService:
 
         return session_data
 
-    async def end_session(self, user, session_id):
-        await self.__session_cache_dao.invalidate_user_session_if_exists(user.username)
+    async def end_session(self, current_user, session_id):
+        session_logger.info(f"[RequestID={self.__request_id}] End session for user {current_user.id}")
+        await self.__session_cache_dao.invalidate_user_session_if_exists(current_user.username)
         await self.__session_cache_dao.delete_session_from_cache(session_id)
 
         session = await self.__session_dao.end_session(session_id)

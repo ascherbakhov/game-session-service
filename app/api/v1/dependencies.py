@@ -14,10 +14,15 @@ from app.database.dao.session_dao import GameSessionDAO
 from app.database.dao.users_dao import UsersDAO
 
 
-def get_session_service(db=Depends(get_db), cache=Depends(get_cache)):
+def get_session_service(request: Request = None, db=Depends(get_db), cache=Depends(get_cache)):
     session_cache_dao = SessionCacheDAO(cache)
     session_dao = GameSessionDAO(db)
-    return SessionsService(session_cache_dao, session_dao)
+
+    request_id = None
+    if request:
+        request_id = getattr(request.state, "request_id", None)
+
+    return SessionsService(session_cache_dao, session_dao, request_id)
 
 
 async def verify_internal_access(request: Request):
