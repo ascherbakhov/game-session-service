@@ -55,7 +55,7 @@ class SessionsService:
             "last_heartbeat": session.last_heartbeat,
         }
 
-    async def get_session(self, session_id: int) -> Optional[dict, None]:
+    async def get_session(self, session_id: int) -> Optional[dict]:
         session_data = await self.__session_cache_dao.get_session_from_cache(session_id)
         if session_data:
             return session_data

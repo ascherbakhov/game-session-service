@@ -5,7 +5,6 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 from app.core.config import app_config
 from app.main_app import make_app, app_lifespan
 from tests.factories import UserFactory, TEST_PASSWORD
-from app.main_app import make_app
 
 
 @pytest.fixture

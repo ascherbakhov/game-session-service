@@ -3,7 +3,7 @@ from fastapi.params import Depends
 from starlette import status
 from starlette.requests import Request
 
-from app.api.v1.handlers.external.utils import oauth2_scheme
+from app.core.password_utils import oauth2_scheme
 from app.api.v1.services.sessions_service import SessionsService
 from app.api.v1.services.auth_service import AuthService
 from app.core.config import app_config

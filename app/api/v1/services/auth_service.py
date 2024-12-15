@@ -4,7 +4,7 @@ from typing import Optional
 
 from jose import jwt, JWTError
 
-from app.api.v1.handlers.external.utils import get_password_hash, pwd_context
+from app.core.password_utils import get_password_hash, pwd_context
 from app.api.v1.schemas.users import UserCreate
 from app.core.config import app_config
 from app.database.dao.users_dao import UsersDAO
