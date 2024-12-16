@@ -21,7 +21,7 @@ RUN if [ "$ENV" = "production" ]; then \
 EXPOSE 8000
 
 CMD if [ "$ENV" = "production" ]; then \
-        poetry run uvicorn app.handlers.main_app:app --host 0.0.0.0 --port 8000; \
+        poetry run uvicorn app.main_app:app --host 0.0.0.0 --port 8000; \
     else \
-        poetry run uvicorn app.handlers.main_app:app --host 0.0.0.0 --port 8000 --reload; \
+        poetry run uvicorn app.main_app:app --host 0.0.0.0 --port 8000 --reload; \
     fi

@@ -1,8 +1,12 @@
+import asyncio
+
 from celery import Celery
 from celery.schedules import crontab
 
 from app.api.v1.dependencies import get_session_service
 from app.core.config import app_config
+from app.core.database import get_db
+from app.core.redis import get_cache
 
 celery_app = Celery(__name__, broker=app_config.redis_url)
 
@@ -15,7 +19,9 @@ celery_app.conf.beat_schedule = {
 celery_app.conf.timezone = "UTC"
 
 
-@celery_app.task
-async def celery_end_expired_sessions():
-    session_service = get_session_service()
-    await session_service.end_expired_sessions()
+@celery_app.task(name="celery_end_expired_sessions")
+def celery_end_expired_sessions():
+    db = get_db()
+    cache = get_cache()
+    session_service = get_session_service(db=db, cache=cache)
+    asyncio.run(session_service.end_expired_sessions())

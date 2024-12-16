@@ -23,20 +23,6 @@ services:
     networks:
       - app_network
 
-  web:
-    image: game_session_logger:latest
-    container_name: game_session_logger
-    environment:
-      - DATABASE_URL=postgresql+asyncpg://app_user:app_password@db/production_database
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
-      - migrate
-      - redis
-    networks:
-      - app_network
-
   migrate:
     image: game_session_logger:latest
     container_name: alembic_migration
