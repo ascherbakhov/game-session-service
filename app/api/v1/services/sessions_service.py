@@ -34,7 +34,7 @@ class SessionsService:
             session_id=session.id,
             user_id=current_user.username,
             session_start=session.session_start.isoformat(),
-            session_end=session.session_end.isoformat() if session.session_end else None
+            session_end=session.session_end.isoformat() if session.session_end else None,
         )
 
         await self.__session_cache_dao.save_session_to_cache(session.id, session_dto)
@@ -53,16 +53,14 @@ class SessionsService:
             session_id=session.id,
             user_id=session.user_id,
             session_start=session.session_start.isoformat(),
-            session_end=session.session_end.isoformat()
+            session_end=session.session_end.isoformat(),
         )
         return session_dto
 
     async def heartbit(self, session_id: int) -> HeartbeatDTO:
         session = await self.__session_dao.update_heartbeat(session_id)
         heartbit_dto = HeartbeatDTO(
-            session_id=session.id,
-            user_id=session.user_id,
-            last_heartbeat=session.last_heartbeat.isoformat()
+            session_id=session.id, user_id=session.user_id, last_heartbeat=session.last_heartbeat.isoformat()
         )
         return heartbit_dto
 
@@ -79,7 +77,7 @@ class SessionsService:
             session_id=session.id,
             user_id=session.user_id,
             session_start=session.session_start.isoformat(),
-            session_end=session.session_end.isoformat() if session.session_end else None
+            session_end=session.session_end.isoformat() if session.session_end else None,
         )
 
         await self.__session_cache_dao.save_session_to_cache(session_id, session_dto)

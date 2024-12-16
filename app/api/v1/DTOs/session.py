@@ -1,12 +1,17 @@
-from dataclasses import dataclass
-from datetime import datetime
+from enum import StrEnum
 from typing import Optional
 
 from pydantic import BaseModel
 
 
+class PlatformEnum(StrEnum):
+    linux = "Linux"
+    windows = "Windows"
+    macos = "MacOS"
+
+
 class StartSessionRequest(BaseModel):
-    platform: str
+    platform: PlatformEnum
 
 
 class StopSessionRequest(BaseModel):

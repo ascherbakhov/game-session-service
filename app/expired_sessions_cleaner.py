@@ -25,6 +25,7 @@ def celery_end_expired_sessions():
     async def get_session():
         session = await anext(get_db())
         return session
+
     db = asyncio.run(get_session())
     cache = get_cache()
     session_service = get_session_service(db=db, cache=cache)
