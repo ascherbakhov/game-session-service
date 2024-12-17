@@ -72,3 +72,18 @@ async def test_end_expired_sessions(async_client, auth_headers, internal_token_h
 
     response = await async_client.get(f"/internal/v1/sessions/{session_id}", headers=internal_token_headers)
     assert response.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_start_session_when_not_ended(auth_headers, async_client, internal_token_headers):
+    await async_client.post(
+        "/api/v1/sessions/start/",
+        json={"user_id": "test_user", "platform": "Linux"},
+        headers=auth_headers,
+    )
+    response = await async_client.post(
+        "/api/v1/sessions/start/",
+        json={"user_id": "test_user", "platform": "Linux"},
+        headers=auth_headers,
+    )
+    assert response.status_code == 200

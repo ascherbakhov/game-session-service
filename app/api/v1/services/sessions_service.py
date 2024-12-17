@@ -26,7 +26,10 @@ class SessionsService:
         session_logger.info(
             f"[RequestID={self.__request_id}] Start session for user {current_user.id} on platform {platform}"
         )
-        await self.__session_cache_dao.invalidate_user_session_if_exists(current_user.id)
+
+        session = await self.__session_dao.get_session_for_user(current_user.username)
+        if session:
+            await self.end_session(current_user, session.id)
 
         session = await self.__session_dao.create_session(current_user.username, platform)
 
@@ -43,7 +46,7 @@ class SessionsService:
         return session_dto
 
     async def end_session(self, current_user: User, session_id: int) -> SessionDTO:
-        session_logger.info(f"[RequestID={self.__request_id}] End session for user {current_user.id}")
+        session_logger.info(f"[RequestID={self.__request_id}] End session {session_id} for user {current_user.id}")
         await self.__session_cache_dao.invalidate_user_session_if_exists(current_user.username)
         await self.__session_cache_dao.delete_session_from_cache(session_id)
 

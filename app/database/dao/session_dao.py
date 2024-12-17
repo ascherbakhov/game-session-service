@@ -33,6 +33,10 @@ class SessionDAO:
         result = await self.db_session.execute(select(GameSession).filter(GameSession.id == session_id))
         return result.scalar()
 
+    async def get_session_for_user(self, user_id: str) -> Optional[GameSession]:
+        result = await self.db_session.execute(select(GameSession).filter(GameSession.user_id == user_id))
+        return result.scalar()
+
     async def update_heartbeat(self, session_id: int) -> GameSession:
         result = await self.db_session.execute(select(GameSession).filter(GameSession.id == session_id))
         game_session = result.scalar()
