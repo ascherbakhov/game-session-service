@@ -47,10 +47,11 @@ class SessionsService:
 
     async def end_session(self, current_user: User, session_id: int) -> SessionDTO:
         session_logger.info(f"[RequestID={self.__request_id}] End session {session_id} for user {current_user.id}")
-        await self.__session_cache_dao.invalidate_user_session_if_exists(current_user.username)
-        await self.__session_cache_dao.delete_session_from_cache(session_id)
 
         session = await self.__session_dao.end_session(session_id)
+
+        await self.__session_cache_dao.invalidate_user_session_if_exists(current_user.username)
+        await self.__session_cache_dao.delete_session_from_cache(session_id)
 
         session_dto = SessionDTO(
             session_id=session.id,
