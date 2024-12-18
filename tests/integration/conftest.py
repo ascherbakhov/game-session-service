@@ -1,6 +1,13 @@
+import os
+from os.path import dirname
+
 import pytest
+from alembic import command
+from alembic.config import Config
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from testcontainers.postgres import PostgresContainer
+from testcontainers.redis import RedisContainer
 
 from app.core.config import app_config
 from app.main_app import make_app, app_lifespan
@@ -8,8 +15,46 @@ from tests.factories import UserFactory, TEST_PASSWORD
 
 
 @pytest.fixture
+def root_dir():
+    return dirname(dirname(dirname(os.path.abspath(__file__))))
+
+
+@pytest.fixture
 def app():
     return make_app()
+
+@pytest.fixture(scope="function", autouse=True)
+async def test_db_with_migrations(root_dir):
+    current_dir = os.getcwd()
+    os.chdir(root_dir)  # FIXME
+
+    with PostgresContainer("postgres:15") as postgres:
+        postgres.start()
+
+        db_url = postgres.get_connection_url()
+        db_url_async = db_url.replace('psycopg2', 'asyncpg')
+        app_config.database_url = db_url
+
+        alembic_cfg = Config(file_=os.path.join(root_dir, 'alembic.ini'))
+        alembic_cfg.set_main_option("sqlalchemy.url", db_url)
+        command.upgrade(alembic_cfg, "head")
+
+        app_config.database_url = db_url_async
+
+        os.chdir(current_dir)
+        yield db_url_async
+
+
+@pytest.fixture(scope="function", autouse=True)
+def test_redis():
+    with RedisContainer("redis:7") as redis_container:
+        redis_container.start()
+        host = redis_container.get_container_host_ip()
+        port = redis_container.get_exposed_port(6379)
+
+        app_config.redis_url=f'redis://{host}:{port}/0'
+
+        yield
 
 
 @pytest.fixture
@@ -18,8 +63,8 @@ def zero_expired_timeout():
 
 
 @pytest.fixture
-async def async_engine():
-    return create_async_engine(app_config.database_url)
+async def async_engine(test_db_with_migrations):
+    return create_async_engine(test_db_with_migrations)
 
 @pytest.fixture
 async def async_session_maker(async_engine):
