@@ -6,28 +6,26 @@ from sqlalchemy.orm import sessionmaker
 
 from app.core.config import app_config
 from app.database.tables.models import Base
-from app.core.database import init_engine, get_db
-from app.main_app import app
 
 
-@pytest.fixture(scope='session')
-def asyncEngine():
+@pytest.fixture(scope='function')
+def async_engine():
     return create_async_engine(app_config.database_url, echo=True)
 
 
-@pytest.fixture(scope='session')
-def asyncSessionLocal(asyncEngine):
-    return sessionmaker(bind=asyncEngine, class_=AsyncSession, expire_on_commit=False)
+@pytest.fixture(scope='function')
+def async_session_local(async_engine):
+    return sessionmaker(bind=async_engine, class_=AsyncSession, expire_on_commit=False)
 
 
-async def create_db(asyncEngine):
-    async with asyncEngine.begin() as conn:
+async def create_db(async_engine):
+    async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     print("Test database created.")
 
 
-async def drop_db(asyncEngine):
-    async with asyncEngine.begin() as conn:
+async def drop_db(async_engine):
+    async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
     print("Test database dropped.")
 
@@ -37,17 +35,10 @@ def set_test_database_url():
     app_config.database_url = "sqlite+aiosqlite:///file::memory:?cache=shared"
 
 
-@pytest.fixture(scope="session", autouse=True)
-def setup_test_db(asyncEngine, asyncSessionLocal):
-    async def _get_test_db():
-        async with asyncSessionLocal() as session:
-            yield session
-    init_engine(app_config.database_url)
-    app.dependency_overrides[get_db] = _get_test_db
-
+@pytest.fixture(scope="function", autouse=True)
+def setup_test_db(async_engine, async_session_local):
     loop = asyncio.new_event_loop()
-    loop.run_until_complete(create_db(asyncEngine))
+    loop.run_until_complete(create_db(async_engine))
     yield
-    loop.run_until_complete(drop_db(asyncEngine))
+    loop.run_until_complete(drop_db(async_engine))
     loop.close()
-    app.dependency_overrides.clear()
