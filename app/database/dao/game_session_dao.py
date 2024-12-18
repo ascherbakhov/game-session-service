@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.tables.models import GameSession
 
 
-class SessionDAO:
+class GameSessionDAO:
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
 

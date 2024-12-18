@@ -2,18 +2,18 @@ import asyncio
 from datetime import datetime, timedelta
 from typing import Optional
 
-from app.api.v1.DTOs.session import SessionDTO, HeartbeatDTO
+from app.api.v1.DTOs.game_session import SessionDTO, HeartbeatDTO
 from app.core.logging import session_logger
-from app.database.dao.redis.session_cache_dao import SessionCacheDAO
-from app.database.dao.session_dao import SessionDAO
+from app.database.dao.redis.game_session_cache_dao import GameSessionCacheDAO
+from app.database.dao.game_session_dao import GameSessionDAO
 from app.database.tables.models import User
 
 
 class SessionsService:
     def __init__(
         self,
-        sessions_cache_dao: SessionCacheDAO,
-        session_dao: SessionDAO,
+        sessions_cache_dao: GameSessionCacheDAO,
+        session_dao: GameSessionDAO,
         expired_session_timeout: int,
         request_id: str = None,
     ):

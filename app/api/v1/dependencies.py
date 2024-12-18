@@ -9,15 +9,15 @@ from app.api.v1.services.auth_service import AuthService
 from app.core.config import app_config
 from app.core.database import get_db
 from app.core.redis import get_cache
-from app.database.dao.redis.session_cache_dao import SessionCacheDAO
-from app.database.dao.session_dao import SessionDAO
+from app.database.dao.redis.game_session_cache_dao import GameSessionCacheDAO
+from app.database.dao.game_session_dao import GameSessionDAO
 from app.database.dao.users_dao import UsersDAO
 from app.database.tables.models import User
 
 
 def get_session_service(request: Request = None, db=Depends(get_db), cache=Depends(get_cache)):
-    session_cache_dao = SessionCacheDAO(cache)
-    session_dao = SessionDAO(db)
+    session_cache_dao = GameSessionCacheDAO(cache)
+    session_dao = GameSessionDAO(db)
 
     request_id = None
     if request:

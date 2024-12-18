@@ -1,10 +1,10 @@
 import json
 from typing import Optional
 
-from app.api.v1.DTOs.session import SessionDTO
+from app.api.v1.DTOs.game_session import SessionDTO
 
 
-class SessionCacheDAO:
+class GameSessionCacheDAO:
     USER_SESSION_KEY = "user_session:{}"
     SESSION_KEY = "session:{}"
 

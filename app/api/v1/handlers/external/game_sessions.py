@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from fastapi_limiter.depends import RateLimiter
 
 from app.api.v1.dependencies import get_session_service, get_current_user
-from app.api.v1.DTOs.session import StartSessionRequest, StopSessionRequest, HeartbeatDTO, SessionDTO
+from app.api.v1.DTOs.game_session import StartSessionRequest, StopSessionRequest, HeartbeatDTO, SessionDTO
 from app.core.config import app_config
 from app.core.metrics import prometheus_metrics
 
