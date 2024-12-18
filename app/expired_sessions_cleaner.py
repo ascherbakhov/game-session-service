@@ -6,6 +6,7 @@ from celery.schedules import crontab
 from app.api.v1.dependencies import get_session_service
 from app.core.config import app_config
 from app.core.database import get_db, init_engine
+from app.core.logging import session_logger
 from app.core.redis import get_cache
 
 celery_app = Celery(__name__, broker=app_config.redis.url)
@@ -22,11 +23,19 @@ init_engine(app_config.database_url)
 
 @celery_app.task(name="celery_end_expired_sessions")
 def celery_end_expired_sessions():
-    async def get_session():
-        session = await anext(get_db())
-        return session
+    try:
+        loop = asyncio.get_event_loop()
+        if not loop.is_running():
+            loop.run_until_complete(_end_expired_sessions())
+        else:
+            loop.create_task(_end_expired_sessions())
+    except Exception as e:
+        session_logger.exception(f"Error in Celery task: {e}")
 
-    db = asyncio.run(get_session())
-    cache = get_cache()
-    session_service = get_session_service(db=db, cache=cache)
-    asyncio.run(session_service.end_expired_sessions())
+
+async def _end_expired_sessions():
+    async for db in get_db():
+        cache = get_cache()
+        session_service = get_session_service(db=db, cache=cache)
+
+        await session_service.end_expired_sessions()
