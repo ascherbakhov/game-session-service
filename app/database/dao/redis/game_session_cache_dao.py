@@ -27,6 +27,7 @@ class GameSessionCacheDAO:
         return None
 
     async def create_session(self, session_data: SessionDTO):
+        session_logger.debug("Cache session create started")
         try:
             await self.__redis_cache.set(
                 self.SESSION_KEY.format(session_data.session_id),
@@ -42,10 +43,12 @@ class GameSessionCacheDAO:
             session_logger.exception(f"Exception {exc} occurred while getting sessions from cache")
 
     async def update_session_ttl(self, session_id, user_id):
+        session_logger.debug("Update session ttl started")
         await self.__redis_cache.expire(self.SESSION_KEY.format(session_id), self.__expired_session_ttl)
         await self.__redis_cache.expire(self.USER_SESSION_KEY.format(user_id), self.__expired_session_ttl)
 
     async def delete_session_from_cache(self, session_id: int):
+        session_logger.debug("Cache session delete started")
         try:
             await self.__redis_cache.delete(self.SESSION_KEY.format(session_id))
         except RedisError as exc:
@@ -71,6 +74,7 @@ class GameSessionCacheDAO:
             return None
 
     async def invalidate_user_session(self, user_id: str):
+        session_logger.debug("Invalidate user session started")
         try:
             current_session_id = await self.get_current_session_id_for_user(user_id)
 
