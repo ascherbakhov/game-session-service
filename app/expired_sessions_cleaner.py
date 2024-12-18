@@ -5,7 +5,7 @@ from celery.schedules import crontab
 
 from app.api.v1.dependencies import get_session_service
 from app.core.config import app_config
-from app.core.database import init_engine, async_session_maker
+from app.core.database import init_engine, get_session_maker
 from app.core.logging import session_logger
 from app.core.redis import get_cache
 
@@ -34,6 +34,7 @@ def celery_end_expired_sessions():
 
 
 async def _end_expired_sessions():
+    async_session_maker = get_session_maker()
     async with async_session_maker() as db:
         cache = get_cache()
         session_service = get_session_service(db=db, cache=cache)
