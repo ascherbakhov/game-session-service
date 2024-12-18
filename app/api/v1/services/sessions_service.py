@@ -84,7 +84,7 @@ class SessionsService:
             session_end=session.session_end.isoformat() if session.session_end else None,
         )
 
-        await self.__session_cache_dao.update_session(session_dto, self.__expired_session_timeout)
+        await self.__session_cache_dao.update_session(session_dto)
         return session_data
 
     async def end_expired_sessions(self) -> None:
