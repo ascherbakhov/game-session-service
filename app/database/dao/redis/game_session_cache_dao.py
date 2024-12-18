@@ -26,26 +26,24 @@ class GameSessionCacheDAO:
             return json.loads(session_data)
         return None
 
-    async def update_session(self, session_data: SessionDTO):
+    async def create_session(self, session_data: SessionDTO):
         try:
             await self.__redis_cache.set(
-                self.SESSION_KEY.format(session_data.session_id), json.dumps(dict(session_data)),
-                ex=self.__expired_session_ttl
+                self.SESSION_KEY.format(session_data.session_id),
+                json.dumps(dict(session_data)),
+                ex=self.__expired_session_ttl,
             )
             await self.__redis_cache.set(
-                self.USER_SESSION_KEY.format(session_data.user_id), str(session_data.session_id),
-                ex=self.__expired_session_ttl
+                self.USER_SESSION_KEY.format(session_data.user_id),
+                str(session_data.session_id),
+                ex=self.__expired_session_ttl,
             )
         except RedisError as exc:
             session_logger.exception(f"Exception {exc} occurred while getting sessions from cache")
 
     async def update_session_ttl(self, session_id, user_id):
-        await self.__redis_cache.expire(
-            self.SESSION_KEY.format(session_id), self.__expired_session_ttl
-        )
-        await self.__redis_cache.expire(
-            self.USER_SESSION_KEY.format(user_id), self.__expired_session_ttl
-        )
+        await self.__redis_cache.expire(self.SESSION_KEY.format(session_id), self.__expired_session_ttl)
+        await self.__redis_cache.expire(self.USER_SESSION_KEY.format(user_id), self.__expired_session_ttl)
 
     async def delete_session_from_cache(self, session_id: int):
         try:
@@ -72,7 +70,7 @@ class GameSessionCacheDAO:
             session_logger.exception(f"Exception {exc} occurred while setting session")
             return None
 
-    async def invalidate_user_session_if_exists(self, user_id: str):
+    async def invalidate_user_session(self, user_id: str):
         try:
             current_session_id = await self.get_current_session_id_for_user(user_id)
 
