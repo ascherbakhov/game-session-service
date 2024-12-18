@@ -8,8 +8,8 @@ services:
       POSTGRES_PASSWORD: app_password
     ports:
       - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    tmpfs:
+      - /var/lib/postgresql/data
     networks:
       - app_network
 
@@ -18,8 +18,8 @@ services:
     container_name: redis_cache
     ports:
       - "6379:6379"
-    volumes:
-      - redis_data:/data
+    tmpfs:
+      - /var/lib/redis/data
     networks:
       - app_network
 
@@ -33,12 +33,6 @@ services:
       - db
     networks:
       - app_network
-
-volumes:
-  postgres_data:
-    driver: local
-  redis_data:
-    driver: local
 
 networks:
   app_network:
