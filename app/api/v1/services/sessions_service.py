@@ -57,10 +57,6 @@ class SessionsService:
             session_end=session.session_end.isoformat(),
         )
 
-        _ = asyncio.create_task(
-            self.__session_cache_dao.invalidate_user_session(current_user.username)
-        )
-
         return session_dto
 
     async def heartbit(self, session_id: int) -> HeartbeatDTO:
@@ -71,7 +67,7 @@ class SessionsService:
         )
 
         _ = asyncio.create_task(
-            self.__session_cache_dao.update_session_ttl(session_id, session.user_id)
+            self.__session_cache_dao.update_session_ttl(session_id)
         )
 
         return heartbit_dto
@@ -100,12 +96,4 @@ class SessionsService:
 
     async def end_expired_sessions(self) -> None:
         expired_time = datetime.now() - timedelta(minutes=self.__expired_session_timeout)
-        expired_sessions = await self.__session_dao.end_expired_sessions(expired_time)
-
-        tasks = []
-        for session in expired_sessions:
-            tasks.append(
-                self.__session_cache_dao.invalidate_user_session(session.user_id)
-            )
-
-        await asyncio.gather(*tasks)
+        await self.__session_dao.end_expired_sessions(expired_time)

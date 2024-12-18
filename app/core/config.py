@@ -23,6 +23,7 @@ class AppConfig(BaseSettings):
     auth: AuthSettings
     expired_sessions_timeout: int
     redis_url: str
+    game_session_redis_ttl: int
     internal_token: str
 
     class Config:

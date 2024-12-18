@@ -71,7 +71,7 @@ async def test_end_expired_sessions(async_client, auth_headers, internal_token_h
     assert response.status_code == 200
 
     response = await async_client.get(f"/internal/v1/sessions/{session_id}", headers=internal_token_headers)
-    assert response.status_code == 404
+    assert response.status_code == 200
 
 
 @pytest.mark.asyncio
