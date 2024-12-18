@@ -16,6 +16,18 @@ class GameSession(Base):
     session_end = Column(DateTime, nullable=True)
     last_heartbeat = Column(DateTime, default=lambda: datetime.now())
 
+    @property
+    def session_start_iso(self):
+        return self.session_start.isoformat() if self.session_start else None
+
+    @property
+    def session_end_iso(self):
+        return self.session_end.isoformat() if self.session_end else None
+
+    @property
+    def last_heartbit_iso(self):
+        return self.last_heartbeat.isoformat() if self.last_heartbeat else None
+
 
 class User(Base):
     __tablename__ = "users"

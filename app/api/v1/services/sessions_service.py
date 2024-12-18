@@ -36,8 +36,8 @@ class SessionsService:
         session_dto = SessionDTO(
             session_id=session.id,
             user_id=current_user.username,
-            session_start=session.session_start.isoformat(),
-            session_end=session.session_end.isoformat() if session.session_end else None,
+            session_start=session.session_start_iso,
+            session_end=session.session_end_iso,
         )
 
         _ = asyncio.create_task(
@@ -53,8 +53,8 @@ class SessionsService:
         session_dto = SessionDTO(
             session_id=session.id,
             user_id=session.user_id,
-            session_start=session.session_start.isoformat(),
-            session_end=session.session_end.isoformat(),
+            session_start=session.session_start_iso,
+            session_end=session.session_end_iso,
         )
 
         return session_dto
@@ -63,7 +63,7 @@ class SessionsService:
         session = await self.__session_dao.update_heartbeat(session_id)
 
         heartbit_dto = HeartbeatDTO(
-            session_id=session.id, user_id=session.user_id, last_heartbeat=session.last_heartbeat.isoformat()
+            session_id=session.id, user_id=session.user_id, last_heartbeat=session.last_heartbit_iso
         )
 
         _ = asyncio.create_task(
@@ -84,8 +84,8 @@ class SessionsService:
         session_dto = SessionDTO(
             session_id=session.id,
             user_id=session.user_id,
-            session_start=session.session_start.isoformat(),
-            session_end=session.session_end.isoformat() if session.session_end else None,
+            session_start=session.session_start_iso,
+            session_end=session.session_end_iso,
         )
 
         _ = asyncio.create_task(
