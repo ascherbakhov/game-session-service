@@ -39,7 +39,10 @@ services:
   celery_worker:
     image: game_session_logger:latest
     container_name: celery_worker
-    entrypoint: [ "/.venv/bin/python", "-m", "celery", "-A", "app.expired_sessions_cleaner", "worker", "--loglevel=info" ]
+    entrypoint: [
+        "/.venv/bin/python", "-m", "celery", "-A", "app.expired_sessions_cleaner",
+        "worker", "--loglevel=info"
+    ]
     environment:
       - REDIS_URL=redis://redis:6379/0
     depends_on:
@@ -50,7 +53,10 @@ services:
   celery_beat:
     image: game_session_logger:latest
     container_name: celery_beat
-    entrypoint: [ "/.venv/bin/python", "-m", "celery", "-A", "app.expired_sessions_cleaner", "beat", "--loglevel=info" ]
+    entrypoint: [
+        "/.venv/bin/python", "-m", "celery", "-A", "app.expired_sessions_cleaner",
+        "beat", "--loglevel=info"
+    ]
     environment:
       - REDIS_URL=redis://redis:6379/0
     depends_on:
