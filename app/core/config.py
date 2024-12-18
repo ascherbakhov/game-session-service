@@ -18,13 +18,13 @@ class AuthSettings(BaseSettings):
 
 
 class RedisSettings(BaseSettings):
-    url: str = 'redis://localhost:6379/0'
+    url: str = 'redis://redis:6379/0'
     game_session_ttl: int = 3600
 
 
 class AppConfig(BaseSettings):
     debug: bool = False
-    database_url: str = 'postgresql+asyncpg://app_user:app_password@localhost/production_database'
+    database_url: str = 'postgresql+asyncpg://app_user:app_password@db/production_database'
     auth: AuthSettings = AuthSettings()
     expired_sessions_timeout: int = 600
     redis: RedisSettings = RedisSettings()

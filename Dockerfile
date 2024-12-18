@@ -1,6 +1,6 @@
 FROM python:3.12-slim
 
-COPY pyproject.toml poetry.lock default.env alembic.ini /
+COPY pyproject.toml poetry.lock alembic.ini /
 COPY /app /app
 COPY /tests /tests
 
