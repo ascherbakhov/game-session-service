@@ -16,7 +16,7 @@ from app.database.tables.models import User
 
 
 def get_session_service(request: Request = None, db=Depends(get_db), cache=Depends(get_cache)):
-    session_cache_dao = GameSessionCacheDAO(cache, app_config.game_session_redis_ttl)
+    session_cache_dao = GameSessionCacheDAO(cache, app_config.redis.game_session_ttl)
     session_dao = GameSessionDAO(db)
 
     request_id = None

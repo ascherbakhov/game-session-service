@@ -17,13 +17,17 @@ class AuthSettings(BaseSettings):
     sign_algorythm: str
 
 
+class RedisSettings(BaseSettings):
+    url: str
+    game_session_ttl: int
+
+
 class AppConfig(BaseSettings):
     debug: bool
     database_url: str
     auth: AuthSettings
     expired_sessions_timeout: int
-    redis_url: str
-    game_session_redis_ttl: int
+    redis: RedisSettings
     internal_token: str
 
     class Config:

@@ -8,7 +8,7 @@ from app.core.config import app_config
 from app.core.database import get_db, init_engine
 from app.core.redis import get_cache
 
-celery_app = Celery(__name__, broker=app_config.redis_url)
+celery_app = Celery(__name__, broker=app_config.redis.url)
 
 celery_app.conf.beat_schedule = {
     "end-expired-sessions-every-10-minutes": {

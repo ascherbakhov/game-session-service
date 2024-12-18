@@ -52,7 +52,7 @@ def test_redis():
         host = redis_container.get_container_host_ip()
         port = redis_container.get_exposed_port(6379)
 
-        app_config.redis_url=f'redis://{host}:{port}/0'
+        app_config.redis.url=f'redis://{host}:{port}/0'
 
         yield
 

@@ -14,7 +14,7 @@ from app.core.redis import init_redis, fini_redis
 
 @asynccontextmanager
 async def app_lifespan(_: FastAPI):
-    init_redis(app_config.redis_url)
+    init_redis(app_config.redis.url)
     await init_rate_limiter()
     init_engine(app_config.database_url)
     yield
