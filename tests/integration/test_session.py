@@ -65,7 +65,7 @@ async def test_end_expired_sessions(async_client, auth_headers, internal_token_h
     assert response.status_code == 200
     session_id = response.json()['session_id']
 
-    response = await async_client.delete(
+    response = await async_client.post(
         "/internal/v1/sessions/end_expired", headers=internal_token_headers
     )
     assert response.status_code == 200

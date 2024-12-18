@@ -22,5 +22,5 @@ Accept: application/json
 ###
 
 # End expired sessions
-DELETE http://localhost:8000/sessions/end_expired?expired_time={{expired_time}}
+POST http://localhost:8000/sessions/end_expired?expired_time={{expired_time}}
 Accept: application/json

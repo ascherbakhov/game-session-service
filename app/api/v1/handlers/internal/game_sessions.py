@@ -15,7 +15,7 @@ async def get_session_internal(session_id: int, session_service=Depends(get_sess
     return session_data
 
 
-@internal_game_session_router.delete("/sessions/end_expired")
+@internal_game_session_router.post("/sessions/end_expired")
 async def end_expired(session_service=Depends(get_session_service)):
     try:
         await session_service.end_expired_sessions()
