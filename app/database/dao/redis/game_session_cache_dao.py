@@ -31,7 +31,7 @@ class GameSessionCacheDAO:
             await self.__redis_cache.set(
                 self.SESSION_KEY.format(session_data.session_id),
                 json.dumps(dict(session_data)),
-                ex=self.__redis_session_ttl
+                ex=self.__redis_session_ttl,
             )
         except RedisError as exc:
             session_logger.exception(f"Exception {exc} occurred while getting sessions from cache")

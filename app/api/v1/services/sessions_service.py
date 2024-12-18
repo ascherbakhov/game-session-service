@@ -40,9 +40,7 @@ class SessionsService:
             session_end=session.session_end_iso,
         )
 
-        _ = asyncio.create_task(
-            self.__session_cache_dao.create_session(session_dto)
-        )
+        _ = asyncio.create_task(self.__session_cache_dao.create_session(session_dto))
 
         return session_dto
 
@@ -66,9 +64,7 @@ class SessionsService:
             session_id=session.id, user_id=session.user_id, last_heartbeat=session.last_heartbit_iso
         )
 
-        _ = asyncio.create_task(
-            self.__session_cache_dao.update_session_ttl(session_id)
-        )
+        _ = asyncio.create_task(self.__session_cache_dao.update_session_ttl(session_id))
 
         return heartbit_dto
 
@@ -88,9 +84,7 @@ class SessionsService:
             session_end=session.session_end_iso,
         )
 
-        _ = asyncio.create_task(
-            self.__session_cache_dao.create_session(session_dto)
-        )
+        _ = asyncio.create_task(self.__session_cache_dao.create_session(session_dto))
 
         return session_data
 
