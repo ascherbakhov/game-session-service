@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, Sequence
 
 from fastapi import HTTPException
 from sqlalchemy import select
@@ -48,7 +48,7 @@ class GameSessionDAO:
         await self.db_session.refresh(game_session)
         return game_session
 
-    async def end_expired_sessions(self, expired_time) -> List[GameSession]:
+    async def end_expired_sessions(self, expired_time) -> Sequence[GameSession]:
         result = await self.db_session.execute(
             select(GameSession).filter(
                 GameSession.session_end == None,  # noqa: E711
