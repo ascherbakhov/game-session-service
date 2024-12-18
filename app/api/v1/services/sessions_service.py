@@ -40,8 +40,7 @@ class SessionsService:
             session_end=session.session_end.isoformat() if session.session_end else None,
         )
 
-        await self.__session_cache_dao.save_session_to_cache(session.id, session_dto)
-        await self.__session_cache_dao.set_current_session_for_user(current_user.username, session.id)
+        await self.__session_cache_dao.update_session(session_dto)
 
         return session_dto
 
@@ -66,6 +65,7 @@ class SessionsService:
         heartbit_dto = HeartbeatDTO(
             session_id=session.id, user_id=session.user_id, last_heartbeat=session.last_heartbeat.isoformat()
         )
+        await self.__session_cache_dao.update_session_ttl(session_id, session.user_id)
         return heartbit_dto
 
     async def get_session(self, session_id: int) -> Optional[dict]:
@@ -84,7 +84,7 @@ class SessionsService:
             session_end=session.session_end.isoformat() if session.session_end else None,
         )
 
-        await self.__session_cache_dao.save_session_to_cache(session_id, session_dto)
+        await self.__session_cache_dao.update_session(session_dto, self.__expired_session_timeout)
         return session_data
 
     async def end_expired_sessions(self) -> None:
