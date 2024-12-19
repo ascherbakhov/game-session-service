@@ -2,7 +2,8 @@ import os
 from os.path import dirname
 
 from dotenv import load_dotenv
-from pydantic_settings import BaseSettings
+from pydantic import ConfigDict
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = dirname(dirname(dirname(os.path.abspath(__file__))))
 DEFAULT_ENV_FILE = os.path.join(BASE_DIR, "default.env")
@@ -30,8 +31,7 @@ class AppConfig(BaseSettings):
     redis: RedisSettings = RedisSettings()
     internal_token: str = 'secret_token'
 
-    class Config:
-        env_nested_delimiter = "__"
+    model_config = SettingsConfigDict(env_nested_delimiter = "__")
 
 
 app_config = AppConfig()

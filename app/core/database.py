@@ -1,3 +1,4 @@
+import asyncio
 from typing import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -16,7 +17,7 @@ def init_engine(database_url: str):
 def fini_engine():
     global __engine, __async_session_maker
     assert __engine is not None
-    __engine.dispose()
+    asyncio.create_task(__engine.dispose())
     __engine = None
     __async_session_maker = None
 
