@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional, Sequence
 
 from fastapi import HTTPException
-from sqlalchemy import select
+from sqlalchemy import select, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database.tables.models import GameSession
@@ -34,7 +34,12 @@ class GameSessionDAO:
         return result.scalar()
 
     async def get_session_for_user(self, user_id: str) -> Optional[GameSession]:
-        result = await self.db_session.execute(select(GameSession).filter(GameSession.user_id == user_id))
+        result = await self.db_session.execute(
+            select(GameSession)
+            .filter(GameSession.user_id == user_id, GameSession.session_end == None)
+            .order_by(desc(GameSession.session_start))
+            .limit(1)
+        )
         return result.scalar()
 
     async def update_heartbeat(self, session_id: int) -> GameSession:

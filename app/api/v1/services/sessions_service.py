@@ -40,7 +40,7 @@ class SessionsService:
             session_end=session.session_end_iso,
         )
 
-        _ = asyncio.create_task(self.__session_cache_dao.create_session(session_dto))
+        _ = asyncio.create_task(self.__session_cache_dao.create_or_update_session(session_dto))
 
         return session_dto
 
@@ -54,6 +54,8 @@ class SessionsService:
             session_start=session.session_start_iso,
             session_end=session.session_end_iso,
         )
+
+        _ = asyncio.create_task(self.__session_cache_dao.create_or_update_session(session_dto))
 
         return session_dto
 
@@ -77,16 +79,22 @@ class SessionsService:
         if not session:
             return None
 
-        session_dto = SessionDTO(
-            session_id=session.id,
-            user_id=session.user_id,
-            session_start=session.session_start_iso,
-            session_end=session.session_end_iso,
-        )
+        session_dto = SessionDTO.create_by_session(session)
 
-        _ = asyncio.create_task(self.__session_cache_dao.create_session(session_dto))
+        _ = asyncio.create_task(self.__session_cache_dao.create_or_update_session(session_dto))
 
         return session_data
+
+    async def get_session_by_user(self, user_id: str):
+        session = await self.__session_dao.get_session_for_user(user_id)
+        if not session:
+            return None
+
+        session_dto = SessionDTO.create_by_session(session)
+
+        _ = asyncio.create_task(self.__session_cache_dao.create_or_update_session(session_dto))
+
+        return session_dto
 
     async def end_expired_sessions(self) -> None:
         expired_time = datetime.now() - timedelta(minutes=self.__expired_session_timeout)

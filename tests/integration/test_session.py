@@ -3,11 +3,13 @@ from datetime import datetime, timezone
 
 import pytest
 
+from app.api.v1.DTOs.game_session import PlatformEnum
+
 
 @pytest.mark.asyncio
 async def test_start_session(auth_headers, async_client):
     response = await async_client.post(
-        "/api/v1/sessions/start/", json={"platform": "Linux"},
+        "/api/v1/sessions/start/", json={"platform": PlatformEnum.linux},
         headers=auth_headers
     )
 
@@ -22,7 +24,7 @@ async def test_start_session(auth_headers, async_client):
 async def test_get_created_session(auth_headers, async_client, internal_token_headers):
     response = await async_client.post(
         "/api/v1/sessions/start/",
-        json={"user_id": "test_user", "platform": "Linux"},
+        json={"platform": PlatformEnum.linux},
         headers=auth_headers,
     )
     assert response.status_code == 200
@@ -39,7 +41,7 @@ async def test_get_created_session(auth_headers, async_client, internal_token_he
 
 @pytest.mark.asyncio
 async def test_heartbit_session(auth_headers, async_client):
-    response = await async_client.post("/api/v1/sessions/start/", json={"platform": "Linux"}, headers=auth_headers)
+    response = await async_client.post("/api/v1/sessions/start/", json={"platform": PlatformEnum.linux}, headers=auth_headers)
     assert response.status_code == 200
     response_data = response.json()
     current_time = time.time()
@@ -61,7 +63,7 @@ async def test_heartbit_session(auth_headers, async_client):
 
 @pytest.mark.asyncio
 async def test_end_expired_sessions(async_client, auth_headers, internal_token_headers, zero_expired_timeout):
-    response = await async_client.post("/api/v1/sessions/start/", json={"platform": "Linux"}, headers=auth_headers)
+    response = await async_client.post("/api/v1/sessions/start/", json={"platform": PlatformEnum.linux}, headers=auth_headers)
     assert response.status_code == 200
     session_id = response.json()['session_id']
 
@@ -76,14 +78,42 @@ async def test_end_expired_sessions(async_client, auth_headers, internal_token_h
 
 @pytest.mark.asyncio
 async def test_start_session_when_not_ended(auth_headers, async_client, internal_token_headers):
+    response = await async_client.post(
+        "/api/v1/sessions/start/",
+        json={"platform": PlatformEnum.linux},
+        headers=auth_headers,
+    )
+    session_id = response.json()['session_id']
+
+    response = await async_client.post(
+        "/api/v1/sessions/start/",
+        json={"platform": PlatformEnum.linux},
+        headers=auth_headers,
+    )
+    assert response.status_code == 200
+
+    response = await async_client.get(f"/internal/v1/sessions/{session_id}", headers=internal_token_headers)
+    assert response.status_code == 200
+    assert response.json()['session_end'] is not None
+
+
+@pytest.mark.asyncio
+async def test_get_session_for_user(auth_headers, async_client, internal_token_headers, test_user):
     await async_client.post(
         "/api/v1/sessions/start/",
-        json={"user_id": "test_user", "platform": "Linux"},
+        json={"platform": PlatformEnum.linux},
         headers=auth_headers,
     )
     response = await async_client.post(
         "/api/v1/sessions/start/",
-        json={"user_id": "test_user", "platform": "Linux"},
+        json={"platform": PlatformEnum.linux},
         headers=auth_headers,
     )
+    session_id = response.json()['session_id']
+
+    response = await async_client.get(
+        f"/internal/v1/users/{test_user.username}/sessions/current",
+        headers=internal_token_headers,
+    )
     assert response.status_code == 200
+    assert session_id == response.json()['session_id']

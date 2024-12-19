@@ -25,7 +25,7 @@ class GameSessionCacheDAO:
             return json.loads(session_data)
         return None
 
-    async def create_session(self, session_data: SessionDTO):
+    async def create_or_update_session(self, session_data: SessionDTO):
         session_logger.debug("Cache session create started")
         try:
             await self.__redis_cache.set(

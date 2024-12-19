@@ -16,24 +16,24 @@ load_dotenv(env_file)
 
 class AuthSettings(BaseSettings):
     access_token_expire_minutes: int = 15
-    secret_key: str = 'super_secret'
-    sign_algorythm: str = 'HS256'
+    secret_key: str = "super_secret"
+    sign_algorythm: str = "HS256"
 
 
 class RedisSettings(BaseSettings):
-    url: str = 'redis://redis:6379/0'
+    url: str = "redis://redis:6379/0"
     game_session_ttl: int = 3600
 
 
 class AppConfig(BaseSettings):
     debug: bool = False
-    database_url: str = 'postgresql+asyncpg://app_user:app_password@db/production_database'
+    database_url: str = "postgresql+asyncpg://app_user:app_password@db/production_database"
     auth: AuthSettings = AuthSettings()
     expired_sessions_timeout: int = 600
     redis: RedisSettings = RedisSettings()
-    internal_token: str = 'secret_token'
+    internal_token: str = "secret_token"
 
-    model_config = SettingsConfigDict(env_nested_delimiter = "__")
+    model_config = SettingsConfigDict(env_nested_delimiter="__")
 
 
 app_config = AppConfig()
