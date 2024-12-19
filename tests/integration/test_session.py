@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 import pytest
 
-from app.api.v1.DTOs.game_session import PlatformEnum
+from app.DTOs.game_session import PlatformEnum
 
 
 @pytest.mark.asyncio

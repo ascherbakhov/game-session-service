@@ -4,8 +4,8 @@ from starlette import status
 from starlette.requests import Request
 
 from app.core.password_utils import oauth2_scheme
-from app.api.v1.services.sessions_service import SessionsService
-from app.api.v1.services.auth_service import AuthService
+from app.services.sessions_service import SessionsService
+from app.services.auth_service import AuthService
 from app.core.config import app_config
 from app.core.database import get_db
 from app.core.redis import get_cache

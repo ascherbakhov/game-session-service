@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.api.v1.dependencies import get_session_service, verify_internal_access
-from app.api.v1.DTOs.game_session import SessionDTO
+from app.handlers.dependencies import get_session_service, verify_internal_access
+from app.DTOs.game_session import SessionDTO
 
 internal_game_session_router = APIRouter(dependencies=[Depends(verify_internal_access)])
 

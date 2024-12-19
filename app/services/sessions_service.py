@@ -2,7 +2,7 @@ import asyncio
 from datetime import datetime, timedelta
 from typing import Optional
 
-from app.api.v1.DTOs.game_session import SessionDTO, HeartbeatDTO
+from app.DTOs.game_session import SessionDTO, HeartbeatDTO
 from app.core.logging import session_logger
 from app.database.dao.redis.game_session_cache_dao import GameSessionCacheDAO
 from app.database.dao.game_session_dao import GameSessionDAO
