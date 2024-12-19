@@ -37,6 +37,10 @@ jobs:
         run: |
           poetry install --with dev
 
+      - name: Setup environment
+        run: |
+          poetry run setup-env
+
       - name: Run tests
         run: |
           poetry run pytest
