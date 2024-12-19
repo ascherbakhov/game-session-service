@@ -30,7 +30,7 @@ async def drop_db(async_engine):
 
 @pytest.fixture(scope="session", autouse=True)
 def set_test_database_url():
-    app_config.database_url = "sqlite+aiosqlite:///file::memory:?cache=shared"
+    app_config.database_url = "sqlite+aiosqlite:///memory"
 
 
 @pytest.fixture(autouse=True)
