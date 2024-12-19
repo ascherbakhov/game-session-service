@@ -1,7 +1,7 @@
 from fastapi_limiter import FastAPILimiter
 from starlette.requests import Request
 
-from app.api.v1.dependencies import get_auth_service
+from app.handlers.dependencies import get_auth_service
 from app.core.database import get_session_maker
 from app.core.redis import get_cache
 

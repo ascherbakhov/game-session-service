@@ -4,11 +4,11 @@ from fastapi import FastAPI
 
 from app.core.config import app_config
 from app.core.database import init_engine, fini_engine
-from app.api.v1.handlers.external.game_sessions import game_session_router
-from app.api.v1.handlers.internal.game_sessions import internal_game_session_router
-from app.api.v1.handlers.limiter import init_rate_limiter, close_rate_limiter
+from app.handlers.api.v1.game_sessions import game_session_router
+from app.handlers.internal.v1.game_sessions import internal_game_session_router
+from app.core.limiter import init_rate_limiter, close_rate_limiter
 from app.core.middlewares.metrics_middleware import setup_metrics
-from app.api.v1.handlers.external.users import auth_router
+from app.handlers.api.v1.users import auth_router
 from app.core.redis import init_redis, fini_redis
 
 

@@ -3,7 +3,7 @@ import asyncio
 from celery import Celery
 from celery.schedules import crontab
 
-from app.api.v1.dependencies import get_session_service
+from app.handlers.dependencies import get_session_service
 from app.core.config import app_config
 from app.core.database import init_engine, get_session_maker
 from app.core.logging import session_logger

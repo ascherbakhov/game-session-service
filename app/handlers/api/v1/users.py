@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette import status
 
-from app.api.v1.dependencies import get_auth_service
-from app.api.v1.DTOs.users import UserCreate
-from app.api.v1.services.auth_service import AuthService
+from app.handlers.dependencies import get_auth_service
+from app.DTOs.users import UserCreate
+from app.services.auth_service import AuthService
 from app.exceptions import UserNotFound, Unauthorized
 
 auth_router = APIRouter()

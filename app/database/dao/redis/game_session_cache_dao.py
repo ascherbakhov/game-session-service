@@ -3,7 +3,7 @@ from typing import Optional
 
 from redis import RedisError
 
-from app.api.v1.DTOs.game_session import SessionDTO
+from app.DTOs.game_session import SessionDTO
 from app.core.logging import session_logger
 
 
