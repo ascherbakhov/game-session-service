@@ -2,13 +2,15 @@ import os
 from os.path import dirname
 
 from dotenv import load_dotenv
-from pydantic import ConfigDict
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = dirname(dirname(dirname(os.path.abspath(__file__))))
-DEFAULT_ENV_FILE = os.path.join(BASE_DIR, "default.env")
+DEFAULT_ENV_FILE = os.path.join(BASE_DIR, ".env")
 
 env_file = os.getenv("ENV_FILE", DEFAULT_ENV_FILE)
+if not os.path.exists(env_file):
+    raise FileNotFoundError(f"Env file not found: {env_file}. Create or put actual path to ENV_FILE.")
+
 load_dotenv(env_file)
 
 

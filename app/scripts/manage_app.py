@@ -1,10 +1,7 @@
 from uvicorn import run as uvicorn_run
 
-from app.api.v1.handlers import celery_app
 from app.core.config import app_config
-
-
-# Manage.py script for managing FastAPI, Celery, and database setup
+from app.expired_sessions_cleaner import celery_app
 
 
 def start_api():

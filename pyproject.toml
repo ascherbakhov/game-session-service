@@ -66,10 +66,11 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-start-api = "app.manage:start_api"
-start-celery-worker = "app.manage:start_celery_worker"
-start-celery-beat = "app.manage:start_celery_beat"
-reset-db = "app.manage:reset_database"
+start-api = "app.scripts.manage_app:start_api"
+start-celery-worker = "app.scripts.manage_app:start_celery_worker"
+start-celery-beat = "app.scripts.manage_app:start_celery_beat"
+reset-db = "app.scripts.manage_app:reset_database"
+setup-env = "app.scripts.setup_env:setup_env"
 
 
 [tool.ruff]
