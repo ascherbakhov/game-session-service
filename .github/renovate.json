@@ -1,16 +1,29 @@
 {
-  "extends": ["config:base"],
-  "schedule": ["every weekend"],
+  "extends": [
+    "config:recommended"
+  ],
+  "schedule": [
+    "every weekend"
+  ],
   "packageRules": [
     {
-      "matchManagers": ["poetry"],
+      "matchManagers": [
+        "poetry"
+      ],
       "groupName": "Major Python Updates",
-      "matchUpdateTypes": ["major"]
+      "matchUpdateTypes": [
+        "major"
+      ]
     },
     {
-      "matchManagers": ["poetry"],
+      "matchManagers": [
+        "poetry"
+      ],
       "groupName": "Minor and Patch Updates",
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "automerge": true
     }
   ]
