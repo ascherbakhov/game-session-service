@@ -4,9 +4,9 @@ from typing import Optional
 
 from jose import jwt, JWTError
 
+from app.DTOs.users import UserDTO
 from app.core.config import AuthSettings
-from app.core.password_utils import get_password_hash, verify_password
-from app.DTOs.users import UserCreate
+from app.core.password_utils import verify_password
 from app.database.dao.users_dao import UsersDAO
 from app.database.tables.models import User
 from app.exceptions import UserNotFound, Unauthorized
@@ -20,9 +20,8 @@ class AuthService:
     async def get_user(self, username: str) -> User:
         return await self.__users_dao.get_user(username)
 
-    async def register_user(self, user: UserCreate) -> User:
-        hashed_password = get_password_hash(user.password)
-        return await self.__users_dao.create_user(user, hashed_password)
+    async def register_user(self, user: UserDTO) -> User:
+        return await self.__users_dao.create_user(user)
 
     async def create_token(self, username: str, password: str) -> str:
         user = await self.authenticate_user(username, password)

@@ -2,8 +2,8 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.DTOs.users import UserDTO
 from app.database.tables.models import User
-from app.DTOs.users import UserCreate
 
 
 class UsersDAO:
@@ -15,11 +15,11 @@ class UsersDAO:
         user = result.scalar()
         return user
 
-    async def create_user(self, user: UserCreate, hashed_password: str) -> User:
+    async def create_user(self, user: UserDTO) -> User:
         new_user = User(
             username=user.username,
             email=user.email,
-            hashed_password=hashed_password,
+            hashed_password=user.hashed_password,
             full_name=user.full_name,
         )
 

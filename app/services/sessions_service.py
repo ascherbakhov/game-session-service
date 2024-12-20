@@ -70,10 +70,10 @@ class SessionsService:
 
         return heartbit_dto
 
-    async def get_session(self, session_id: int) -> Optional[dict]:
-        session_data = await self.__session_cache_dao.get_session_from_cache(session_id)
-        if session_data:
-            return session_data
+    async def get_session(self, session_id: int) -> Optional[SessionDTO]:
+        session_dto = await self.__session_cache_dao.get_session_from_cache(session_id)
+        if session_dto:
+            return session_dto
 
         session = await self.__session_dao.get_session(session_id)
         if not session:
@@ -83,7 +83,7 @@ class SessionsService:
 
         _ = asyncio.create_task(self.__session_cache_dao.create_or_update_session(session_dto))
 
-        return session_data
+        return session_dto
 
     async def get_session_by_user(self, user_id: str):
         session = await self.__session_dao.get_session_for_user(user_id)
