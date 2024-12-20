@@ -1,7 +1,6 @@
 import json
 from typing import Optional
 
-from dulwich.porcelain import reset
 from redis import RedisError
 
 from app.DTOs.game_session import SessionDTO
