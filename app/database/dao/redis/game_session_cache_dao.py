@@ -14,7 +14,7 @@ class GameSessionCacheDAO:
         self.__redis_cache = redis_cache
         self.__redis_session_ttl = redis_session_ttl
 
-    async def get_session_from_cache(self, session_id: int) -> Optional[dict]:
+    async def get_session_from_cache(self, session_id: int) -> Optional[SessionDTO]:
         try:
             session_data = await self.__redis_cache.get(self.SESSION_KEY.format(session_id))
         except RedisError as exc:
@@ -22,7 +22,8 @@ class GameSessionCacheDAO:
             return None
 
         if session_data:
-            return json.loads(session_data)
+            result = json.loads(session_data)
+            return SessionDTO.model_validate(result)
         return None
 
     async def create_or_update_session(self, session_data: SessionDTO):

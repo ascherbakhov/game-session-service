@@ -2,8 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette import status
 
+from app.DTOs.users import UserDTO
 from app.handlers.dependencies import get_auth_service
-from app.DTOs.users import UserCreate
+from app.handlers.api.v1.schemas.users import UserCreate
 from app.services.auth_service import AuthService
 from app.exceptions import UserNotFound, Unauthorized
 
@@ -34,7 +35,8 @@ async def login(
 @auth_router.post("/register")
 async def register_user(user: UserCreate, auth_service: AuthService = Depends(get_auth_service)):
     try:
-        await auth_service.register_user(user)
+        user_dto = UserDTO.create_from_schema(user)
+        await auth_service.register_user(user_dto)
     except ValueError:
         raise HTTPException(status_code=400, detail="Email or username already registered")
     else:

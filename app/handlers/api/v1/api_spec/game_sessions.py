@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends
 from fastapi_limiter.depends import RateLimiter
 
 from app.handlers.dependencies import get_session_service, get_current_user
-from app.DTOs.game_session import StartSessionRequest, StopSessionRequest, HeartbeatDTO, SessionDTO
+from app.DTOs.game_session import HeartbeatDTO, SessionDTO
+from app.handlers.api.v1.schemas.game_sessions import StartSessionRequest, StopSessionRequest
 from app.core.config import app_config
 from app.core.metrics import prometheus_metrics
 
@@ -18,7 +19,7 @@ async def start_session(
     result = await session_service.start_session(current_user, request.platform)
     prometheus_metrics.SESSIONS_CREATED.inc()
 
-    return dict(result)
+    return result
 
 
 @game_session_router.post("/end/{session_id}", response_model=SessionDTO, summary="Ending game session")
@@ -26,7 +27,7 @@ async def end_session(
     request: StopSessionRequest, session_service=Depends(get_session_service), _=Depends(get_current_user)
 ):
     result = await session_service.end_session(request.session_id)
-    return dict(result)
+    return result
 
 
 @game_session_router.post(
@@ -37,4 +38,4 @@ async def end_session(
 )
 async def heartbeat(session_id: int, session_service=Depends(get_session_service), _=Depends(get_current_user)):
     result = await session_service.heartbit(session_id)
-    return dict(result)
+    return result
